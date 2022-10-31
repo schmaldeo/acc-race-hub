@@ -13,7 +13,7 @@ const client = new MongoClient(
 const main = async () => {
   await client.connect();
   const db = client.db(process.env.MONGO_DB_NAME);
-  const collection = db.collection(process.env.MONGO_COLLECTION_NAME);
+  const collection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME);
   await collection.deleteMany({});
   console.log("deleted");
   client.close();

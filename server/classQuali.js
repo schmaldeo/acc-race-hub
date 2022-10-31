@@ -9,7 +9,7 @@ const classQuali = () => {
     { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 },
   );
   const db = client.db(process.env.MONGO_DB_NAME);
-  const collection = db.collection(process.env.MONGO_COLLECTION_NAME);
+  const collection = db.collection(process.env.MONGO_QUALI_COLLECTION_NAME);
 
   const leaderboard = [];
 
@@ -40,7 +40,7 @@ const classQuali = () => {
           }
         });
         driver.amountOfValidLaps = driver.laps.length;
-        // delete carId because it's redundant and carries no useful information in the database
+        // delete carId because it's redundant
         delete driver.carId;
       });
 
@@ -50,6 +50,7 @@ const classQuali = () => {
           collection.findOne({ playerId: driver.playerId }, (error, doc) => {
             if (error) throw error;
             if (doc) {
+              // if newly pushed data contains the new fastest lap push it to db
               let newBestLap;
               if (driver.bestLap < doc.bestLap) {
                 newBestLap = driver.bestLap;
@@ -69,8 +70,6 @@ const classQuali = () => {
             }
           });
         });
-        // Clear the leaderboard array after processing a file is done
-        leaderboard.length = 0;
       });
     });
   });

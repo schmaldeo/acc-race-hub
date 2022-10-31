@@ -24,6 +24,7 @@ const raceResults = () => {
 
       // Make a leaderboard of each class for the race uploaded
       const leaderboard = [[], [], []];
+      const laps = json.sessionResult.leaderBoardLines[0].timing.lapCount;
       json.sessionResult.leaderBoardLines.forEach((entry) => {
         switch (entry.car.cupCategory) {
           case 0:
@@ -85,27 +86,35 @@ const raceResults = () => {
             champCollection.findOne({ playerId: driver.driver.playerId }, (error, doc) => {
               if (error) throw error;
 
+              let dnf;
+              driver.lapCount < laps - 10 ? dnf = true : dnf = false;
+
               let pointsToAward;
-              if (pointsMap[index + 1]) {
+              if (!dnf && pointsMap[index + 1]) {
                 pointsToAward = pointsMap[index + 1];
               } else {
                 pointsToAward = 0;
               }
+
+              const track = json.trackName;
 
               if (doc) {
                 champCollection.updateOne(
                   { playerId: driver.driver.playerId },
                   {
                     $inc: { points: pointsToAward },
+                    $set: { [track]: dnf ? "DNF" : index + 1 },
                   },
                 );
               } else {
                 champCollection.insertOne({
                   playerId: driver.driver.playerId,
                   name: `${driver.driver.firstName} ${driver.driver.lastName}`,
+                  car: driver.car,
                   points: pointsToAward,
                   class: driver.class,
                   number: driver.number,
+                  [track]: dnf ? "DNF" : index + 1,
                 });
               }
             });
