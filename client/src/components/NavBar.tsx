@@ -1,25 +1,26 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const navigate = useNavigate();
   return (
     <div className="nav">
       <nav>
-        <a href="/#/races">
+        <button type="button" onClick={() => navigate("/races")}>
           <div>
-            <Link to="/races">Races</Link>
+            Races
           </div>
-        </a>
-        <a href="/#/championship">
+        </button>
+        <button type="button" onClick={() => navigate("/championship")}>
           <div>
-            <Link to="/championship">Championship</Link>
+            Championship
           </div>
-        </a>
-        <a href="/#/classqualifying">
+        </button>
+        <button type="button" onClick={() => navigate("/classqualifying")}>
           <div>
-            <Link to="/classqualifying">Class qualifying</Link>
+            Class qualifying
           </div>
-        </a>
+        </button>
       </nav>
       <Outlet />
     </div>

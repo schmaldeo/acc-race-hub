@@ -63,7 +63,7 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
 
   return (
     <div key={race.track} className="race">
-      <button type="button" onClick={handleClick}>CLOSE</button>
+      <button type="button" onClick={handleClick}>CLOSE DETAILED RESULTS</button>
       <div>{race.race}</div>
       <div>
         Track:&nbsp;

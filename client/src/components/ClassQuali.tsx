@@ -2,18 +2,14 @@ import React from "react";
 import { useQuery } from "react-query";
 import { FidgetSpinner } from "react-loader-spinner";
 import { msToLaptime } from "./helpers";
-import { Driver } from "./types";
+import { ClassQualiEntry } from "./types";
 
 function ClassQuali() {
-  const { isLoading, error, data } = useQuery("champData", () => fetch("http://127.0.0.1:4001/classquali").then((res) => res.json()));
+  const { isLoading, error, data } = useQuery<ClassQualiEntry[], Error>("classQ", () => fetch("http://127.0.0.1:4001/classquali").then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 
-  if (error) {
-    return (
-      <div>error</div>
-    );
-  }
+  if (error) return <div>{error.message}</div>;
 
   return (
     <div className="classquali">
@@ -26,7 +22,7 @@ function ClassQuali() {
           </tr>
         </thead>
         <tbody>
-          {data.map((driver: Driver) => {
+          {data?.map((driver: ClassQualiEntry) => {
             return (
               <tr key={driver.playerId}>
                 <td>{driver.name}</td>

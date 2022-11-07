@@ -157,3 +157,56 @@ nav > * {
 .nav {
   text-align: center;
 }
+
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: rgb(15, 15, 15);
+}
+
+a:visited {
+  color: rgb(15, 15, 15);
+}
+
+nav > button {
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.race > button {
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  background-color: rgb(128, 128, 128);
+  width: 34%;
+  margin: auto;
+  color: white;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.race > button:hover {
+  background-color:rgb(116, 116, 116);
+}
+
+.purple {
+  background-color: purple;
+}
+
+.best-lap {
+  width: 14rem;
+}
+
+.gap {
+  width: 14rem;
+}
+
+.widget-champ-btn {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
