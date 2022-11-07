@@ -15,13 +15,52 @@ body {
   align-items: center;
 }
 
+.classquali {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.races {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.results {
+  display: flex;
+  justify-content: center;
+}
+
+.class-results {
+  width: 33%;
+}
+
 .race {
-  width: 5rem
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  margin: 1rem 0;
+  text-align: center;
+  background-color: rgb(36, 36, 36)
+}
+
+.race > * {
+  padding: 0.5rem 0;
 }
 
 .raceFlag {
   width: 50px;
   height: auto;
+}
+
+.race-column {
+  width: 50px;
+  padding: 5px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 td {
@@ -31,6 +70,10 @@ td {
 table, td, tr, th {
   border: 1px solid white;
   border-collapse: collapse;
+}
+
+table {
+  overflow: scroll;
 }
 
 tr {
@@ -49,12 +92,16 @@ table {
   width: 5rem;
 }
 
+.driver-name {
+  width: 20rem;
+}
+
 .car {
   width: 20rem;
 }
 
 .points {
-  width: 14rem;
+  width: 10rem;
 }
 
 .champ-btns {
@@ -68,6 +115,7 @@ table {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   border: 0;
+  cursor: pointer;
 }
 
 .pro {
@@ -80,4 +128,32 @@ table {
 
 .am {
   background-color: red;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  height: 3rem;
+}
+
+nav > * {
+  margin: 0 0.25rem;
+  width: 10rem;
+  height: 90%;
+  background-color: rgb(238, 238, 238);
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-box-shadow: 8px 8px 25px -12px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 8px 8px 25px -12px rgba(66, 68, 90, 1);
+  box-shadow: 8px 8px 25px -12px rgba(66, 68, 90, 1);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.nav {
+  text-align: center;
 }
