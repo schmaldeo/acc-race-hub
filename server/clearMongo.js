@@ -13,8 +13,16 @@ const client = new MongoClient(
 const main = async () => {
   await client.connect();
   const db = client.db(process.env.MONGO_DB_NAME);
-  const collection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME);
-  await collection.deleteMany({});
+  const standingsCollection = db.collection(process.env.MONGO_STANDINGS_COLLECTION_NAME);
+  const raceCollection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME);
+  const constructorsCollection = db.collection(process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME);
+  const teamsCollection = db.collection("teams");
+  const teamsStandingsCollection = db.collection(process.env.MONGO_TEAMS_STANDINGS_COLLECTION_NAME);
+  await standingsCollection.deleteMany({});
+  await raceCollection.deleteMany({});
+  await constructorsCollection.deleteMany({});
+  await teamsStandingsCollection.deleteMany({});
+  // await teamsCollection.deleteMany({});
   console.log("deleted");
   client.close();
 };

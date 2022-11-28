@@ -35,13 +35,13 @@ function Championship() {
   const race = (track: (string|number)[], index: number, roundDropped: number) => {
     return index === roundDropped
       ? (
-        <td>
+        <td key={index}>
           {showDropRound ? <s>{track[0]}</s> : track[0]}
           {track[1] ? <sup>F</sup> : ""}
         </td>
       )
       : (
-        <td>
+        <td key={index}>
           {track[0]}
           {track[1] ? <sup>F</sup> : ""}
         </td>
@@ -104,7 +104,7 @@ function Championship() {
             <th className="points">Points</th>
             {data?.season.map((r: string) => {
               return (
-                <th data-tip data-for={`${r}tip`} className={`race-column ${flagsMap[r]}`}>
+                <th data-tip data-for={`${r}tip`} className={`race-column ${flagsMap[r]}`} key={r}>
                   <ReactTooltip className="tooltip" id={`${r}tip`} place="top" effect="solid">
                     {parseTrackName(r)}
                   </ReactTooltip>

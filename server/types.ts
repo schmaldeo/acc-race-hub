@@ -59,7 +59,21 @@ export interface ChampStandingsEntry {
   _id: string,
   playerId: string,
   points: number,
+  pointsWDrop: number,
   finishes: {
     [trackName: string]: (number|boolean)[]
-  }
+  },
+  roundDropped: number
+}
+
+export interface ManufacturersElement {
+  car: number,
+  place: number
+}
+
+export interface Team {
+  _id: string,
+  team: string,
+  drivers: string[],
+  class: string
 }

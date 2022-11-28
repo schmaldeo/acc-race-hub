@@ -1,6 +1,7 @@
 **/node_modules
 /client/.pnp
 /client/.pnp.js
+/client/public/flags
 
 # testing
 /client/coverage
@@ -24,3 +25,4 @@ yarn-error.log*
 **/test
 /server/results
 .eslintrc.json
+/server/bk
