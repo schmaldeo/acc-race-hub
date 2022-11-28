@@ -35,6 +35,8 @@ export interface ClassEntry {
   number: number,
   car: string,
   points: number,
+  pointsWDrop: number,
+  roundDropped?: number,
   finishes: {
     [raceName: string]: (string|number)[]
   },
@@ -71,7 +73,7 @@ export interface Race {
 }
 
 export interface RaceSubcomponentsProps {
-  race: Race;
+  race: Race,
   setOpened: Dispatch<SetStateAction<boolean>>,
   opened: boolean
 }

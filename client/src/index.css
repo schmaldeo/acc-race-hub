@@ -5,9 +5,48 @@ body {
   font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: black;
+  /* background-color: black;
+  color: white; */
   color: white;
+  -webkit-animation: gradient 15s ease infinite;
+          animation: gradient 15s ease infinite;
 }
+
+@-webkit-keyframes gradient {
+0% {
+  background-position: 0% 50%;
+}
+50% {
+  background-position: 100% 50%;
+}
+100% {
+  background-position: 0% 50%;
+}
+}
+
+@keyframes gradient {
+0% {
+  background-position: 0% 50%;
+}
+50% {
+  background-position: 100% 50%;
+}
+100% {
+  background-position: 0% 50%;
+}
+}
+
+.body-gradient {
+  background: rgb(106, 0, 117);
+  background: -o-linear-gradient(30deg, #000000, #1e0144, #27005a, #53015a);
+  background: linear-gradient(60deg, #000000, #1e0144, #27005a, #53015a);
+  background-size: 300%;
+}
+
+.body-black {
+  background-color: black;
+}
+
 
 .championship {
   display: flex;
@@ -44,7 +83,7 @@ body {
   padding: 10px;
   margin: 1rem 0;
   text-align: center;
-  background-color: rgb(36, 36, 36)
+  background-color: rgb(53, 1, 95)
 }
 
 .race > * {
@@ -134,7 +173,7 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background-color: rgb(63, 9, 107);
   height: 3rem;
 }
 
@@ -142,14 +181,14 @@ nav > * {
   margin: 0 0.25rem;
   width: 10rem;
   height: 90%;
-  background-color: rgb(238, 238, 238);
-  color: black;
+  background-color: rgb(47, 0, 85);
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  -webkit-box-shadow: 8px 8px 25px -12px rgba(66, 68, 90, 1);
-  -moz-box-shadow: 8px 8px 25px -12px rgba(66, 68, 90, 1);
-  box-shadow: 8px 8px 25px -12px rgba(66, 68, 90, 1);
+  -webkit-box-shadow: 8px 8px 25px -12px rgb(88, 88, 88);
+  -moz-box-shadow: 8px 8px 25px -12px rgb(83, 83, 83);
+  box-shadow: 8px 8px 25px -12px rgb(92, 92, 92);
   border-radius: 0.5rem;
   cursor: pointer;
 }
@@ -177,12 +216,19 @@ nav > button {
   cursor: pointer;
 }
 
+.black-mode {
+  background-color: black;
+  position: absolute;
+  right: 0;
+  height: inherit;
+}
+
 .race > button {
   border: none;
   padding: 0;
   font: inherit;
   cursor: pointer;
-  background-color: rgb(128, 128, 128);
+  background-color: rgb(65, 0, 117);
   width: 34%;
   margin: auto;
   color: white;
@@ -191,7 +237,7 @@ nav > button {
 }
 
 .race > button:hover {
-  background-color:rgb(116, 116, 116);
+  background-color:rgb(76, 0, 138);
 }
 
 .purple {
@@ -209,4 +255,9 @@ nav > button {
 .widget-champ-btn {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.tooltip {
+  font-family: "Montserrat", sans-serif; 
+  font-weight: normal
 }

@@ -1,1 +1,1 @@
-export default function raceResults(): void
+export default function raceResults(): void;

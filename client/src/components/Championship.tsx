@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { FidgetSpinner } from "react-loader-spinner";
@@ -13,6 +10,7 @@ const flagsMap: { [country: string]: string } = _flagsMap;
 
 function Championship() {
   const [classToDisplay, setClassToDisplay] = useState("Pro");
+  const [showDropRound, setShowDropRound] = useState(true);
 
   const handleClick = (c: string) => {
     switch (c) {
@@ -30,13 +28,24 @@ function Championship() {
     }
   };
 
-  const race = (track: (string|number)[]) => {
-    return (
-      <td>
-        {track[0]}
-        {track[1] ? <sup>F</sup> : ""}
-      </td>
-    );
+  const handleDropRoundClick = () => {
+    showDropRound ? setShowDropRound(false) : setShowDropRound(true);
+  };
+
+  const race = (track: (string|number)[], index: number, roundDropped: number) => {
+    return index === roundDropped
+      ? (
+        <td>
+          {showDropRound ? <s>{track[0]}</s> : track[0]}
+          {track[1] ? <sup>F</sup> : ""}
+        </td>
+      )
+      : (
+        <td>
+          {track[0]}
+          {track[1] ? <sup>F</sup> : ""}
+        </td>
+      );
   };
 
   const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch("http://127.0.0.1:4001/champ").then((res) => res.json()));
@@ -53,20 +62,28 @@ function Championship() {
     am: data?.classStandings.am,
   };
 
-  Object.values(classes).forEach((arr) => arr?.sort((a: ClassEntry, b: ClassEntry) => b.points - a.points));
+  Object.values(classes).forEach((arr) => arr?.sort(
+    (a: ClassEntry, b: ClassEntry) => {
+      return (showDropRound ? b.pointsWDrop - a.pointsWDrop : b.points - a.points);
+    },
+  ));
 
-  const leaderboard = (classes[classToDisplay] || classes.pro)?.map((driver: ClassEntry, index: number) => {
-    return (
-      <tr key={driver.driver.playerID}>
-        <td>{index + 1}</td>
-        <td>{driver.number}</td>
-        <td>{`${driver.driver.firstName} ${driver.driver.lastName}`}</td>
-        <td>{driver.car}</td>
-        <td>{driver.points}</td>
-        {data?.races.map((key: string) => (driver.finishes[key] ? race(driver.finishes[key]) : <td>DNS</td>))}
-      </tr>
-    );
-  });
+  const leaderboard = (classes[classToDisplay] || classes.pro)
+    ?.map((driver: ClassEntry, index: number) => {
+      return (
+        <tr key={driver.driver.playerID}>
+          <td>{index + 1}</td>
+          <td>{driver.number}</td>
+          <td>{`${driver.driver.firstName} ${driver.driver.lastName}`}</td>
+          <td>{driver.car}</td>
+          <td>{showDropRound ? driver.pointsWDrop : driver.points}</td>
+          {data?.races.map((key: string, i: number) => (
+            driver.finishes[key] ? race(driver.finishes[key], i, driver.roundDropped || 0)
+              : <td>DNS</td>
+          ))}
+        </tr>
+      );
+    });
 
   return (
     <div className="championship">
@@ -76,6 +93,7 @@ function Championship() {
         <button type="button" className="class-btn am" onClick={() => handleClick("am")}>AM</button>
       </div>
 
+      <button type="button" onClick={handleDropRoundClick}>Show drop round</button>
       <table>
         <thead>
           <tr>
@@ -87,7 +105,7 @@ function Championship() {
             {data?.season.map((r: string) => {
               return (
                 <th data-tip data-for={`${r}tip`} className={`race-column ${flagsMap[r]}`}>
-                  <ReactTooltip id={`${r}tip`} place="top" effect="solid">
+                  <ReactTooltip className="tooltip" id={`${r}tip`} place="top" effect="solid">
                     {parseTrackName(r)}
                   </ReactTooltip>
                 </th>

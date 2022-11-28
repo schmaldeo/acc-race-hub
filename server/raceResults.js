@@ -1,8 +1,8 @@
+/* eslint-disable no-nested-ternary */
 import fs from "fs";
 import chokidar from "chokidar";
 import { MongoClient, ServerApiVersion } from "mongodb";
-import { msToLaptime } from "./helpers.js";
-import carsMap from "./carsMap.js";
+import { flatten, $set, $inc } from "mongo-dot-notation";
 import pointsMap from "./pointsMap.js";
 
 const raceResults = () => {
@@ -14,6 +14,7 @@ const raceResults = () => {
   const db = client.db(process.env.MONGO_DB_NAME);
   const raceCollection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME);
   const champCollection = db.collection(process.env.MONGO_STANDINGS_COLLECTION_NAME);
+  const entrylistCollection = db.collection(process.env.MONGO_ENTRYLIST_COLLECTION_NAME);
 
   chokidar.watch(process.env.RESULTS_FOLDER, { ignoreInitial: true }).on("add", (file) => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
@@ -22,105 +23,229 @@ const raceResults = () => {
       if (err) throw err;
       const json = JSON.parse(data.toString());
 
-      // Make a leaderboard of each class for the race uploaded
-      const leaderboard = [[], [], []];
-      const laps = json.sessionResult.leaderBoardLines[0].timing.lapCount;
-      json.sessionResult.leaderBoardLines.forEach((entry) => {
-        switch (entry.car.cupCategory) {
-          case 0:
-            leaderboard[0].push(
-              {
-                driver: entry.car.drivers[0],
-                car: carsMap[entry.car.carModel],
-                number: entry.car.raceNumber,
-                class: "Pro",
-                bestLap: msToLaptime(entry.timing.bestLap),
-                lapCount: entry.timing.lapCount,
-                totalTime: entry.timing.totalTime,
-              },
-            );
-            break;
-          case 2:
-            leaderboard[1].push(
-              {
-                driver: entry.car.drivers[0],
-                car: carsMap[entry.car.carModel],
-                number: entry.car.raceNumber,
-                class: "AM",
-                bestLap: msToLaptime(entry.timing.bestLap),
-                lapCount: entry.timing.lapCount,
-                totalTime: entry.timing.totalTime,
-              },
-            );
-            break;
-          case 3:
-            leaderboard[2].push(
-              {
-                driver: entry.car.drivers[0],
-                car: carsMap[entry.car.carModel],
-                number: entry.car.raceNumber,
-                class: "Silver",
-                bestLap: msToLaptime(entry.timing.bestLap),
-                lapCount: entry.timing.lapCount,
-                totalTime: entry.timing.totalTime,
-              },
-            );
-            break;
-          default:
-            console.error("wrong class");
-        }
-      });
-
-      client.connect(() => {
-        // Insert race results into the DB
-        raceCollection.insertOne({
-          race: json.serverName,
-          track: json.trackName,
-          results: leaderboard,
+      // make sure it only processes race dumps
+      if (json.sessionType === "R") {
+        // Push relevant info on finishing order to the array
+        const leaderboard = [];
+        const laps = json.sessionResult.leaderBoardLines[0].timing.lapCount;
+        json.sessionResult.leaderBoardLines.forEach((entry) => {
+          leaderboard.push(
+            {
+              playerId: entry.car.drivers[0].playerId,
+              bestLap: entry.timing.bestLap,
+              lapCount: entry.timing.lapCount,
+              totalTime: entry.timing.totalTime,
+            },
+          );
         });
 
-        // Calculate how many points a driver should get based on their class
-        // and insert them into the standings collection or update their record
-        leaderboard.forEach((c) => {
-          c.forEach((driver, index) => {
-            champCollection.findOne({ playerId: driver.driver.playerId }, (error, doc) => {
-              if (error) throw error;
+        client.connect(async () => {
+          raceCollection.insertOne({
+            race: json.serverName,
+            track: json.trackName,
+            results: leaderboard,
+          });
 
-              let dnf;
-              driver.lapCount < laps - 10 ? dnf = true : dnf = false;
+          const classesGroupped = { pro: [], silver: [], am: [] };
 
-              let pointsToAward;
-              if (!dnf && pointsMap[index + 1]) {
-                pointsToAward = pointsMap[index + 1];
-              } else {
-                pointsToAward = 0;
+          const classes = {
+            0: "am",
+            1: "silver",
+            3: "pro",
+          };
+          const classesFetched = await entrylistCollection.find().toArray();
+          classesFetched.forEach((driver) => {
+            classesGroupped[classes[driver.drivers[0].driverCategory]].push({
+              playerId: driver.drivers[0].playerID,
+              place: leaderboard.indexOf(leaderboard.find((e) => e.playerId === driver.drivers[0].playerID)),
+              result: null,
+            });
+          });
+
+          Object.keys(classesGroupped).forEach((c) => {
+            classesGroupped[c].forEach((driver) => {
+              if (leaderboard.find((e) => e.playerId === driver.playerId)) {
+                driver.result = leaderboard.find((e) => e.playerId === driver.playerId);
               }
+            });
 
-              const track = json.trackName;
+            classesGroupped[c].sort((a, b) => {
+              if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId)) === -1) {
+                return 1;
+              } if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId)) === -1) {
+                return -1;
+              }
+              return leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId)) - leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId));
+            });
+            const best = classesGroupped[c]
+              .filter((e) => e.result)
+              .filter((e) => e.result.lapCount > laps - 5)
+              .reduce((prev, curr) => (prev.result.bestLap < curr.result.bestLap ? prev : curr));
+            best.result.fastestLap = true;
+            classesGroupped[c].sort((a, b) => leaderboard.indexOf(a) - leaderboard.indexOf(b));
+            classesGroupped[c].forEach(async (driver, index) => {
+              const existing = await champCollection.findOne({ playerId: driver.playerId });
+              if (driver.result) {
+                let dnf;
+                driver.result.lapCount < laps - 10 ? dnf = true : dnf = false;
 
-              if (doc) {
-                champCollection.updateOne(
-                  { playerId: driver.driver.playerId },
-                  {
-                    $inc: { points: pointsToAward },
-                    $set: { [track]: dnf ? "DNF" : index + 1 },
-                  },
-                );
+                let pointsToAward;
+                if (!dnf && pointsMap[index + 1]) {
+                  driver.result.fastestLap ? pointsToAward = pointsMap[index + 1] + 3 : pointsToAward = pointsMap[index + 1];
+                } else {
+                  pointsToAward = 0;
+                }
+
+                if (!existing) {
+                  champCollection.insertOne({
+                    playerId: driver.playerId,
+                    points: pointsToAward,
+                    pointsWDrop: pointsToAward,
+                    finishes: { [json.trackName]: [dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward] },
+                  });
+                } else {
+                  const existingPoints = [];
+                  Object.values(existing.finishes).forEach((round) => {
+                    pointsMap[round[0]] ? round[1] === true ? existingPoints.push(pointsMap[round[0]] + 3) : existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
+                  });
+                  existingPoints.push(pointsToAward);
+                  const toDrop = existingPoints.indexOf(Math.min(...existingPoints));
+                  existingPoints.length > 1 && (existingPoints[toDrop] = 0);
+                  const dropPoints = existingPoints.reduce((prev, curr) => prev + curr, 0);
+                  const updated = {
+                    points: $inc(pointsToAward),
+                    pointsWDrop: dropPoints,
+                    roundDropped: toDrop,
+                    [`finishes.${json.trackName}`]: $set([dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward]),
+                  };
+                  champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
+                }
               } else {
-                champCollection.insertOne({
-                  playerId: driver.driver.playerId,
-                  name: `${driver.driver.firstName} ${driver.driver.lastName}`,
-                  car: driver.car,
-                  points: pointsToAward,
-                  class: driver.class,
-                  number: driver.number,
-                  [track]: dnf ? "DNF" : index + 1,
-                });
+                // eslint-disable-next-line no-lonely-if
+                if (!existing) {
+                  champCollection.insertOne({
+                    playerId: driver.playerId,
+                    points: 0,
+                    pointsWDrop: 0,
+                    finishes: { [json.trackName]: ["DNS", false, 0] },
+                  });
+                } else {
+                  const existingPoints = [];
+                  Object.values(existing.finishes).forEach((round) => {
+                    pointsMap[round[0]] ? round[1] === true ? existingPoints.push(pointsMap[round[0]] + 3) : existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
+                  });
+                  existingPoints.push(0);
+                  const toDrop = existingPoints.indexOf(Math.min(...existingPoints));
+                  existingPoints.length > 1 && (existingPoints[toDrop] = 0);
+                  const dropPoints = existingPoints.reduce((prev, curr) => prev + curr, 0);
+
+                  const updated = {
+                    pointsWDrop: dropPoints,
+                    roundDropped: toDrop,
+                    [`finishes.${json.trackName}`]: $set(["DNS", false, 0]),
+                  };
+                  champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
+                }
               }
             });
           });
         });
-      });
+
+        // client.connect(async () => {
+        //   // Insert race results into the DB
+        //   raceCollection.insertOne({
+        //     race: json.serverName,
+        //     track: json.trackName,
+        //     results: leaderboard,
+        //   });
+
+        //   // Create a temporary array for each class to calculate points
+        //   const tempLeaderboard = { pro: [], silver: [], am: [] };
+        //   let el = [];
+
+        //   // find out which class a driver is in by searching for them in the entrylistCollection, then push into the array
+        //   leaderboard.forEach((driver) => {
+        //     el.push(entrylistCollection.findOne(
+        //       { drivers: { $elemMatch: { playerID: driver.playerId } } },
+        //     ));
+        //   });
+        //   el = await Promise.all(el);
+
+        // const classes = {
+        //   0: "am",
+        //   1: "silver",
+        //   3: "pro",
+        // };
+
+        //   el.forEach((driver) => {
+        //     tempLeaderboard[classes[driver.drivers[0].driverCategory]]
+        //       .push(leaderboard.find((e) => e.playerId === driver.drivers[0].playerID));
+        //   });
+
+        //   // Find out which drivers are already in the championship standings collection in the database
+        //   let driversAlreadyInTheChampionship = [];
+
+        //   Object.keys(tempLeaderboard).forEach((arr) => {
+        //     // find out who had purple in each class
+        // const best = tempLeaderboard[arr]
+        //   .filter((e) => e.lapCount > laps - 5)
+        //   .reduce((prev, curr) => (prev.bestLap < curr.bestLap ? prev : curr));
+        //     best.fastestLap = true;
+        //     tempLeaderboard[arr].forEach((driver) => {
+        //       driversAlreadyInTheChampionship
+        //         .push(champCollection.findOne({ playerId: driver.playerId }));
+        //     });
+        //   });
+
+        //   // filter this array out so that there's no null values to mess with Array.prototype.some() used later
+        //   driversAlreadyInTheChampionship = (await Promise.all(driversAlreadyInTheChampionship)).filter((e) => e);
+
+        // Object.keys(tempLeaderboard).forEach((arr) => {
+        //   tempLeaderboard[arr].forEach(async (driver, index) => {
+        //     // find out if a driver did not finish by checking if they were more than 10 laps down by the end, probably has to be changed
+        //     let dnf;
+        //     driver.lapCount < laps - 10 ? dnf = true : dnf = false;
+
+        //     // calculate points to be awarded
+        //     let pointsToAward;
+        //     if (!dnf && pointsMap[index + 1]) {
+        //       driver.fastestLap ? pointsToAward = pointsMap[index + 1] + 3 : pointsToAward = pointsMap[index + 1];
+        //     } else {
+        //       pointsToAward = 0;
+        //     }
+
+        //     // if driver is already in the championship standings collection update their entry, if they aren't add one
+        //     if (!driversAlreadyInTheChampionship.some((e) => e.playerId === driver.playerId)) {
+        //       champCollection.insertOne({
+        //         playerId: driver.playerId,
+        //         points: pointsToAward,
+        //         pointsWDrop: pointsToAward,
+        //         finishes: { [json.trackName]: [dnf ? "DNF" : index + 1, driver.fastestLap === true, pointsToAward] },
+        //       });
+        //     } else {
+        //       const existing = await champCollection.findOne({ playerId: driver.playerId });
+        //       const existingPoints = [];
+        //       Object.values(existing.finishes).forEach((round) => {
+        //         pointsMap[round[0]] ? existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
+        //       });
+        //       existingPoints.push(pointsToAward);
+        //       const toDrop = existingPoints.indexOf(Math.min(...existingPoints));
+        //       existingPoints.length > 1 && (existingPoints[toDrop] = 0);
+        //       const dropPoints = existingPoints.reduce((prev, curr) => prev + curr, 0);
+
+        //       // console.log(toDrop);
+        //       const updated = {
+        //         points: $inc(pointsToAward),
+        //         pointsWDrop: dropPoints,
+        //         roundDropped: toDrop,
+        //         [`finishes.${json.trackName}`]: $set([dnf ? "DNF" : index + 1, driver.fastestLap === true, pointsToAward]),
+        //       };
+        //       champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
+        //     }
+        //   });
+        // });
+        // });
+      }
     });
   });
 };

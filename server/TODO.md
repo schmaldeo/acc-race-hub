@@ -4,17 +4,18 @@
 
 ### Todo
 
-- [ ] Make the DB store names in a different collection to avoid redundancy
-- [ ] Display championship standings
-- [ ] add fastest lap handling in raceResults.js
+- [ ] CORS!!
+- [ ] something like on TSG where we can give time back or add it on would be good
+  - [ ] need to be able to mark drivers as DNF and remove points for that
 
 ### In Progress
+- [x] drop round calc
+  - [ ] DNS handling
 
-- [ ] Display race results
-  - [ ] frontend
-- [ ] Class quali  
-  - [ ] check for a possible bug where with high rate of dumps not all drivers get their laps updated in the db  
 
 ### Done ✓
-
-
+- [x] Display race results
+- [x] add fastest lap handling in raceResults.js
+- [x] Class quali  
+- [x] Display championship standings
+- [x] EXPLICIT CHECK FOR SESSIONTYPE: "R" IN RACERESULTS.JS 

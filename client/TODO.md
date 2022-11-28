@@ -5,6 +5,7 @@
 ### Todo
 - [ ] Manufacturer, team standings
 - [ ] Simresults display on flag click (https://simresults.net/api)
+  - [ ] most likely not possible to automate on the same server as dumps
 
 ### In Progress
 
