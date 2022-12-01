@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 // Pretty self-explainatory - conversion of milliseconds
 // (laptimes are given in millisecondsin the server output file) to a mm:ss.SSS string.
 export function msToLaptime(milliseconds: number) {

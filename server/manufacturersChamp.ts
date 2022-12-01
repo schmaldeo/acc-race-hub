@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/named
 import { ManufacturersElement } from "./types";
 import pointsMap from "./pointsMap.json" assert { type: "json" };
 

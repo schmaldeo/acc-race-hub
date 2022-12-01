@@ -1,6 +1,6 @@
 import React from "react";
-import { RaceSubcomponentsProps } from "./types";
-import { parseTrackName } from "./helpers";
+import { RaceSubcomponentsProps } from "../types";
+import { parseTrackName } from "../helpers";
 
 function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   const handleClick = () => {

@@ -16,7 +16,7 @@ function NavBar() {
   };
   const navigate = useNavigate();
   return (
-    <div className="nav">
+    <div className="App">
       <nav>
         <button type="button" onClick={() => navigate("/races")}>
           <div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BigRaceResult from "./BigRaceResult";
 import SmallRaceResult from "./SmallRaceResult";
-import { Race } from "./types";
+import { Race } from "../types";
 
 function RaceResultComponent({ race }: {race: Race}) {
   const [opened, setOpened] = useState(false);

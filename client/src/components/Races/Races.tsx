@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
 import { FidgetSpinner } from "react-loader-spinner";
-import { Race } from "./types";
+import { Race } from "../types";
 import RaceResultComponent from "./RaceResultComponent";
 
 function Races() {

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, ChangeEventHandler } from "react";
 
 interface Driver {
   firstName: string,
@@ -52,6 +52,31 @@ export interface ChampionshipData {
   season: string[]
 }
 
+// TEAMS CHAMPIONSHIP
+export interface TeamsChampionshipEntry {
+  _id: string,
+  team: string,
+  drivers: string[],
+  class: string,
+  points: {
+    points: number,
+    pointsWDrop: number
+  }
+}
+
+export interface TeamsChampionshipData {
+  pro: TeamsChampionshipEntry[],
+  silver: TeamsChampionshipEntry[],
+  am: TeamsChampionshipEntry[]
+}
+
+// CONSTRUCTORS CHAMPIONSHIP
+export interface ConstructorsChampionshipEntry {
+  _id: string,
+  car: string,
+  points: number
+}
+
 // RACE RESULTS
 export interface RaceResultsEntry {
   driver: Driver,
@@ -76,4 +101,9 @@ export interface RaceSubcomponentsProps {
   race: Race,
   setOpened: Dispatch<SetStateAction<boolean>>,
   opened: boolean
+}
+
+export interface DropRoundToggleProps {
+  showDropRound: boolean,
+  handleDropRoundClick:ChangeEventHandler<HTMLInputElement>
 }

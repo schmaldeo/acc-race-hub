@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { RaceResultsEntry, RaceSubcomponentsProps } from "./types";
-import { msToLaptime, parseTotalRaceTime, parseTrackName } from "./helpers";
+import { RaceResultsEntry, RaceSubcomponentsProps } from "../types";
+import { msToLaptime, parseTotalRaceTime, parseTrackName } from "../helpers";
 
 function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   const [classToDisplay, setClassToDisplay] = useState("pro");

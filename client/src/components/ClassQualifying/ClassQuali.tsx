@@ -1,8 +1,8 @@
 import React from "react";
 import { useQuery } from "react-query";
 import { FidgetSpinner } from "react-loader-spinner";
-import { msToLaptime } from "./helpers";
-import { ClassQualiEntry } from "./types";
+import { msToLaptime } from "../helpers";
+import { ClassQualiEntry } from "../types";
 
 function ClassQuali() {
   const { isLoading, error, data } = useQuery<ClassQualiEntry[], Error>("classQ", () => fetch("http://127.0.0.1:4001/classquali").then((res) => res.json()));

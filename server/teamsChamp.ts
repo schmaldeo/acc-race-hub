@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
-import { flatten, $inc } from "mongo-dot-notation";
+import { flatten } from "mongo-dot-notation";
 
 dotenv.config();
 
@@ -27,7 +27,6 @@ export default async function teamsChamp() {
     },
   ]).toArray();
   arr.forEach(async (e) => {
-    // eslint-disable-next-line no-underscore-dangle
     await teamsCollection.updateOne({ _id: e._id }, flatten(e));
   });
 }

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import express from "express";
 import cors from "cors";
 import { MongoClient } from "mongodb";
@@ -64,6 +63,46 @@ const server = () => {
       races.forEach((race) => lb.races.push(race.track));
       res.json(lb);
     });
+  });
+
+  app.get("/teams", async (req, res) => {
+    await client.connect();
+    const data = { pro: [], silver: [], am: [] };
+    try {
+      const fetchedData = await db.collection("teams").find().toArray();
+      fetchedData.forEach((entry) => {
+        if (entry.points.length === 2) {
+          entry.points = {
+            points: entry.points[0].points + entry.points[1].points,
+            pointsWDrop: entry.points[0].pointsWDrop + entry.points[1].pointsWDrop,
+          };
+        } else {
+          entry.points = {
+            points: entry.points[0].points,
+            pointsWDrop: entry.points[0].pointsWDrop,
+          };
+        }
+      });
+      data.pro = fetchedData.filter((e) => e.class === "pro");
+      data.silver = fetchedData.filter((e) => e.class === "silver");
+      data.am = fetchedData.filter((e) => e.class === "am");
+    } catch (err) {
+      throw new Error("Error fetching teams");
+    } finally {
+      res.json(data);
+    }
+  });
+
+  app.get("/constructors", async (req, res) => {
+    await client.connect();
+    let data = {};
+    try {
+      data = await db.collection("manufacturer_standings").find().toArray();
+    } catch (err) {
+      throw new Error("Error fetching manufacturers");
+    } finally {
+      res.json(data);
+    }
   });
 
   app.get("/classquali", (req, res) => {

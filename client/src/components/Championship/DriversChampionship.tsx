@@ -1,36 +1,23 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { FidgetSpinner } from "react-loader-spinner";
 import ReactTooltip from "react-tooltip";
-import _flagsMap from "./flagsMap.json";
-import { ClassEntry, ChampionshipData } from "./types";
-import { parseTrackName } from "./helpers";
+import { FidgetSpinner } from "react-loader-spinner";
+import { ClassEntry, ChampionshipData } from "../types";
+import { parseTrackName } from "../helpers";
+import _flagsMap from "../flagsMap.json";
+import DropRoundToggle from "./DropRoundToggle";
 
 const flagsMap: { [country: string]: string } = _flagsMap;
 
-function Championship() {
+function DriversChampionship() {
   const [classToDisplay, setClassToDisplay] = useState("Pro");
   const [showDropRound, setShowDropRound] = useState(true);
-
-  const handleClick = (c: string) => {
-    switch (c) {
-      case "pro":
-        setClassToDisplay("pro");
-        break;
-      case "silver":
-        setClassToDisplay("silver");
-        break;
-      case "am":
-        setClassToDisplay("am");
-        break;
-      default:
-        setClassToDisplay("pro");
-    }
-  };
 
   const handleDropRoundClick = () => {
     showDropRound ? setShowDropRound(false) : setShowDropRound(true);
   };
+
+  const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch("http://127.0.0.1:4001/champ").then((res) => res.json()));
 
   const race = (track: (string|number)[], index: number, roundDropped: number) => {
     return index === roundDropped
@@ -48,11 +35,21 @@ function Championship() {
       );
   };
 
-  const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch("http://127.0.0.1:4001/champ").then((res) => res.json()));
-
-  if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
-
-  if (error) return <div>{error.message}</div>;
+  const handleClick = (c: string) => {
+    switch (c) {
+      case "pro":
+        setClassToDisplay("pro");
+        break;
+      case "silver":
+        setClassToDisplay("silver");
+        break;
+      case "am":
+        setClassToDisplay("am");
+        break;
+      default:
+        setClassToDisplay("pro");
+    }
+  };
 
   const classes: {
     [key: string]: ClassEntry[] | undefined,
@@ -85,6 +82,10 @@ function Championship() {
       );
     });
 
+  if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
+
+  if (error) return <span>error.message</span>;
+
   return (
     <div className="championship">
       <div className="champ-btns">
@@ -92,8 +93,7 @@ function Championship() {
         <button type="button" className="class-btn silver" onClick={() => handleClick("silver")}>Silver</button>
         <button type="button" className="class-btn am" onClick={() => handleClick("am")}>AM</button>
       </div>
-
-      <button type="button" onClick={handleDropRoundClick}>Show drop round</button>
+      <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <table>
         <thead>
           <tr>
@@ -121,4 +121,4 @@ function Championship() {
   );
 }
 
-export default Championship;
+export default DriversChampionship;

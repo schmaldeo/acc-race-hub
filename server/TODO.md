@@ -7,13 +7,14 @@
 - [ ] CORS!!
 - [ ] something like on TSG where we can give time back or add it on would be good
   - [ ] need to be able to mark drivers as DNF and remove points for that
+- [ ] figure out async teamsChamp
 
 ### In Progress
-- [x] drop round calc
-  - [ ] DNS handling
 
 
 ### Done ✓
+- [x] drop round calc
+  - [x] DNS handling
 - [x] Display race results
 - [x] add fastest lap handling in raceResults.js
 - [x] Class quali  
