@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { MongoClient } from "mongodb";
+import { readFileSync } from "fs";
+import https from "https";
 import * as dotenv from "dotenv";
 import carsMap from "./carsMap.json" assert { type: "json" };
 
@@ -98,6 +100,7 @@ const server = () => {
     let data = {};
     try {
       data = await db.collection("manufacturer_standings").find().toArray();
+      data.sort((a, b) => b.points - a.points);
     } catch (err) {
       throw new Error("Error fetching manufacturers");
     } finally {
@@ -166,9 +169,15 @@ const server = () => {
     });
   });
 
-  app.listen(port, () => {
-    console.log(`listening on ${port}`);
-  });
+  https
+    .createServer(
+      {
+        key: readFileSync("key.pem"),
+        cert: readFileSync("cert.pem"),
+      },
+      app,
+    )
+    .listen(4001, () => console.log("listening on 4001"));
 };
 
 export default server;
