@@ -109,6 +109,8 @@ const server = () => {
     } catch (err) {
       console.error(`Error fetching teams ${err}`);
       res.sendStatus(500);
+    } finally {
+      client.close();
     }
   });
 
@@ -122,6 +124,8 @@ const server = () => {
     } catch (err) {
       console.error(`Error fetching manufacturers ${err}`);
       res.sendStatus(500);
+    } finally {
+      client.close();
     }
   });
 
@@ -134,6 +138,8 @@ const server = () => {
     } catch (err) {
       console.error(`Error fetching class qualifying results ${err}`);
       res.sendStatus(500);
+    } finally {
+      client.close();
     }
   });
 
@@ -196,6 +202,8 @@ const server = () => {
     } catch (err) {
       console.error(`Error fetching race results ${err}`);
       res.sendStatus(500);
+    } finally {
+      client.close();
     }
   });
 
