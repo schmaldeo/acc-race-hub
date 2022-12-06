@@ -1,37 +1,51 @@
 import fs from "fs";
 import chokidar from "chokidar";
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient } from "mongodb";
 import { flatten, $set, $inc } from "mongo-dot-notation";
-import pointsMap from "./pointsMap.json" assert { type: "json" };
-import carsMap from "./carsMap.json" assert { type: "json" };
+import _pointsMap from "./pointsMap.json" assert { type: "json" };
+import _carsMap from "./carsMap.json" assert { type: "json" };
 import manufacturersChamp from "./manufacturersChamp.js";
 import teamsChamp from "./teamsChamp.js";
+import {
+  ParsedLeaderboardEntry,
+  ManufacturersElement,
+  LeaderboardLines,
+  EntrylistEntry,
+  ClassesGroupped,
+  ChampionshipEntry,
+} from "./types";
+
+const carsMap: {[index: string]: string} = _carsMap;
+const pointsMap: {[index: string]: number} = _pointsMap;
 
 const raceResults = () => {
+  if (!process.env.MONGO_URI) throw new Error("Mongo URI not specified");
   const uri = process.env.MONGO_URI;
-  const client = new MongoClient(
-    uri,
-    { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 },
-  );
+  const client = new MongoClient(uri);
   const db = client.db(process.env.MONGO_DB_NAME);
+  if (!process.env.MONGO_RACE_COLLECTION_NAME
+    || !process.env.MONGO_STANDINGS_COLLECTION_NAME
+    || !process.env.MONGO_ENTRYLIST_COLLECTION_NAME
+    || !process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME
+  ) throw new Error("Required environment variables not specified (collection names)");
   const raceCollection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME);
-  const champCollection = db.collection(process.env.MONGO_STANDINGS_COLLECTION_NAME);
-  const entrylistCollection = db.collection(process.env.MONGO_ENTRYLIST_COLLECTION_NAME);
+  const champCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME);
+  const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME);
   const manufacturersCollection = db.collection(process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME);
 
-  chokidar.watch(process.env.RESULTS_FOLDER, { ignoreInitial: true }).on("add", (file) => {
+  chokidar.watch(process.env.RESULTS_FOLDER || "results", { ignoreInitial: true }).on("add", (file) => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
     // therefore need to pass the argument for JSON.parse() to work correctly
-    fs.readFile(`${file}`, "utf16le", async (err, data) => {
+    fs.readFile(`${file}`, "utf8", async (err, data) => {
       const json = JSON.parse(data.toString());
 
       // make sure it only processes race dumps
       if (json.sessionType === "R") {
         // Push relevant info on finishing order to the array
-        const leaderboard = [];
-        const lbForManufacturers = [];
+        const leaderboard: ParsedLeaderboardEntry[] = [];
+        const lbForManufacturers: ManufacturersElement[] = [];
         const laps = json.sessionResult.leaderBoardLines[0].timing.lapCount;
-        json.sessionResult.leaderBoardLines.forEach((entry, index) => {
+        json.sessionResult.leaderBoardLines.forEach((entry: LeaderboardLines, index: number) => {
           leaderboard.push(
             {
               playerId: entry.car.drivers[0].playerId,
@@ -69,18 +83,23 @@ const raceResults = () => {
           }
         });
 
-        const classesGroupped = { pro: [], silver: [], am: [] };
+        const classesGroupped: {
+          [index: string]: ClassesGroupped[]
+        } = { pro: [], silver: [], am: [] };
 
-        const classes = {
+        const classes: {
+          [index: number]: string;
+        } = {
           0: "am",
           1: "silver",
           3: "pro",
         };
         const classesFetched = await entrylistCollection.find().toArray();
+
         classesFetched.forEach((driver) => {
           classesGroupped[classes[driver.drivers[0].driverCategory]].push({
             playerId: driver.drivers[0].playerID,
-            place: leaderboard.indexOf(leaderboard.find((e) => e.playerId === driver.drivers[0].playerID)),
+            place: leaderboard.indexOf(leaderboard.find((e) => e.playerId === driver.drivers[0].playerID) as ParsedLeaderboardEntry),
             result: null,
           });
         });
@@ -88,24 +107,23 @@ const raceResults = () => {
         Object.keys(classesGroupped).forEach((c) => {
           classesGroupped[c].forEach((driver) => {
             if (leaderboard.find((e) => e.playerId === driver.playerId)) {
-              driver.result = leaderboard.find((e) => e.playerId === driver.playerId);
+              driver.result = leaderboard.find((e) => e.playerId === driver.playerId) || null;
             }
           });
 
           classesGroupped[c].sort((a, b) => {
-            if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId)) === -1) {
+            if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId) as ParsedLeaderboardEntry) === -1) {
               return 1;
-            } if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId)) === -1) {
+            } if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId) as ParsedLeaderboardEntry) === -1) {
               return -1;
             }
-            return leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId)) - leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId));
+            return leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId) as ParsedLeaderboardEntry) - leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId) as ParsedLeaderboardEntry);
           });
 
           const best = classesGroupped[c]
-            .filter((e) => e.result)
-            .filter((e) => e.result.lapCount > laps - 5)
-            .reduce((prev, curr) => (prev.result.bestLap < curr.result.bestLap ? prev : curr));
-          best.result.fastestLap = true;
+            .filter((e) => e.result && e.result.lapCount > laps - 5)
+            .reduce((prev, curr) => (prev.result && curr.result && prev.result.bestLap < curr.result.bestLap ? prev : curr));
+          best.result!.fastestLap = true;
 
           classesGroupped[c].forEach(async (driver, index) => {
             const existing = await champCollection.findOne({ playerId: driver.playerId });

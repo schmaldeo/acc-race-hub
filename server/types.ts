@@ -36,14 +36,14 @@ export interface EntrylistEntry {
 }
 
 export interface ChampionshipEntry {
-  _id: string;
+  _id?: string;
   playerId: string;
   points: number;
   pointsWDrop: number;
   finishes: {
     [track: string]: [number | string, boolean, number]
   };
-  roundDropped: number;
+  roundDropped?: number;
 }
 
 export interface LeaderboardLines {
