@@ -13,7 +13,7 @@ export function parseTrackName(string: string) {
   if (string.indexOf("_") !== -1) {
     const tempString = string.replace(/_/g, " ");
     const spl = tempString.split(" ");
-    const mapped = spl.map((str) => str.charAt(0).toUpperCase() + str.substr(1)).join(" ");
+    const mapped = spl.map((str) => str.charAt(0).toUpperCase() + str.slice(1)).join(" ");
     return mapped;
   }
   return string.charAt(0).toUpperCase() + string.slice(1);
