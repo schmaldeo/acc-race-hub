@@ -5,11 +5,11 @@ import { Race } from "../types";
 import RaceResultComponent from "./RaceResultComponent";
 
 function Races() {
-  const { isLoading, error, data } = useQuery<Race[], Error>("races", () => fetch("http://127.0.0.1:4001/raceresults").then((res) => res.json()));
+  const { isLoading, error, data } = useQuery<Race[], Error>("races", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/raceresults`).then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 
-  if (error) return <div>{error.message}</div>;
+  if (error) return <span>{error.message}</span>;
 
   return (
     <div className="races">

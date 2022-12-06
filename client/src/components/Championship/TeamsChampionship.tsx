@@ -28,7 +28,7 @@ function TeamsChampionship() {
     }
   };
 
-  const { isLoading, error, data } = useQuery<TeamsChampionshipData, Error>("teamsData", () => fetch("https://bskit-hub-backend.onrender.com/teams").then((res) => res.json()));
+  const { isLoading, error, data } = useQuery<TeamsChampionshipData, Error>("teamsData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/teams`).then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 

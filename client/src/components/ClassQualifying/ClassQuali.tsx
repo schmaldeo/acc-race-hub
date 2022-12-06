@@ -5,7 +5,7 @@ import { msToLaptime } from "../helpers";
 import { ClassQualiEntry } from "../types";
 
 function ClassQuali() {
-  const { isLoading, error, data } = useQuery<ClassQualiEntry[], Error>("classQ", () => fetch("http://127.0.0.1:4001/classquali").then((res) => res.json()));
+  const { isLoading, error, data } = useQuery<ClassQualiEntry[], Error>("classQ", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/classquali`).then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 

@@ -17,7 +17,7 @@ function DriversChampionship() {
     showDropRound ? setShowDropRound(false) : setShowDropRound(true);
   };
 
-  const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch("http://127.0.0.1:4001/champ").then((res) => res.json()));
+  const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/champ`).then((res) => res.json()));
 
   const race = (track: (string|number)[], index: number, roundDropped: number) => {
     return index === roundDropped
@@ -84,7 +84,7 @@ function DriversChampionship() {
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 
-  if (error) return <span>error.message</span>;
+  if (error) return <span>{error.message}</span>;
 
   return (
     <div className="championship">
@@ -94,7 +94,7 @@ function DriversChampionship() {
         <button type="button" className="class-btn am" onClick={() => handleClick("am")}>AM</button>
       </div>
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
-      <table>
+      <table id="drivers-table">
         <thead>
           <tr>
             <th className="place">Place</th>
