@@ -53,21 +53,25 @@ export interface ChampionshipData {
 }
 
 // TEAMS CHAMPIONSHIP
-export interface TeamsChampionshipEntry {
-  _id: string,
-  team: string,
-  drivers: string[],
-  class: string,
+export interface Team {
+  _id: string;
+  team: string;
+  drivers: string[];
+  class: string;
   points: {
-    points: number,
+    points: number;
     pointsWDrop: number
+  }[];
+  pointsCalculated: {
+    points: number;
+    pointsWDrop: number;
   }
 }
 
 export interface TeamsChampionshipData {
-  pro: TeamsChampionshipEntry[],
-  silver: TeamsChampionshipEntry[],
-  am: TeamsChampionshipEntry[]
+  pro: Team[],
+  silver: Team[],
+  am: Team[]
 }
 
 // CONSTRUCTORS CHAMPIONSHIP

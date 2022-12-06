@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { FidgetSpinner } from "react-loader-spinner";
 import DropRoundToggle from "./DropRoundToggle";
-import { TeamsChampionshipData, TeamsChampionshipEntry } from "../types";
+import { TeamsChampionshipData, Team } from "../types";
 
 function TeamsChampionship() {
   const [classToDisplay, setClassToDisplay] = useState("Pro");
@@ -28,14 +28,14 @@ function TeamsChampionship() {
     }
   };
 
-  const { isLoading, error, data } = useQuery<TeamsChampionshipData, Error>("teamsData", () => fetch("http://127.0.0.1:4001/teams").then((res) => res.json()));
+  const { isLoading, error, data } = useQuery<TeamsChampionshipData, Error>("teamsData", () => fetch("https://bskit-hub-backend.onrender.com/teams").then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 
-  if (error) return <span>error.message</span>;
+  if (error) return <span>{error.message}</span>;
 
   const classes: {
-    [key: string]: TeamsChampionshipEntry[] | undefined,
+    [key: string]: Team[] | undefined,
   } = {
     pro: data?.pro,
     silver: data?.silver,
@@ -43,19 +43,23 @@ function TeamsChampionship() {
   };
 
   Object.values(classes).forEach((arr) => arr?.sort(
-    (a: TeamsChampionshipEntry, b: TeamsChampionshipEntry) => {
-      return (showDropRound ? b.points.pointsWDrop - a.points.pointsWDrop
-        : b.points.points - a.points.points);
+    (a: Team, b: Team) => {
+      return (showDropRound ? b.pointsCalculated.pointsWDrop - a.pointsCalculated.pointsWDrop
+        : b.pointsCalculated.points - a.pointsCalculated.points);
     },
   ));
 
   const leaderboard = (classes[classToDisplay] || classes.pro)
-    ?.map((team: TeamsChampionshipEntry, index: number) => {
+    ?.map((team: Team, index: number) => {
       return (
         <tr key={team._id}>
           <td>{index + 1}</td>
           <td>{team.team}</td>
-          <td>{showDropRound ? team.points.pointsWDrop : team.points.points}</td>
+          <td>
+            {showDropRound
+              ? team.pointsCalculated.pointsWDrop
+              : team.pointsCalculated.points}
+          </td>
         </tr>
       );
     });
