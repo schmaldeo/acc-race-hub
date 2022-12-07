@@ -36,8 +36,9 @@ const server = () => {
 
   app.use(cors());
 
-  app.get("/champ", (req, res) => {
-    client.connect(async () => {
+  app.get("/champ", async (req, res) => {
+    try {
+      await client.connect();
       const lb: ServerChampionshipRes = {
         classStandings: { pro: [], silver: [], am: [] }, races: [],
       };
@@ -79,15 +80,20 @@ const server = () => {
       const races = await raceCollection.find().toArray();
       races.forEach((race) => lb.races.push(race.track));
       res.json(lb);
-    });
+    } catch (err) {
+      console.error(`Error fetching teams ${err}`);
+      res.sendStatus(500);
+    } finally {
+      client.close();
+    }
   });
 
   app.get("/teams", async (req, res) => {
-    await client.connect();
-    const data: {
-      [c: string]: Team[]
-    } = { pro: [], silver: [], am: [] };
     try {
+      await client.connect();
+      const data: {
+        [c: string]: Team[]
+      } = { pro: [], silver: [], am: [] };
       const fetchedData = await db.collection<Team>("teams").find().toArray();
       fetchedData.forEach((entry) => {
         if (entry.points.length === 2) {
@@ -115,10 +121,9 @@ const server = () => {
   });
 
   app.get("/constructors", async (req, res) => {
-    await client.connect();
-    let data: WithId<Manufacturer>[];
     try {
-      data = await db.collection<Manufacturer>("manufacturer_standings").find().toArray();
+      await client.connect();
+      const data: WithId<Manufacturer>[] = await db.collection<Manufacturer>("manufacturer_standings").find().toArray();
       data.sort((a, b) => b.points - a.points);
       res.json(data);
     } catch (err) {
@@ -130,8 +135,8 @@ const server = () => {
   });
 
   app.get("/classquali", async (req, res) => {
-    await client.connect();
     try {
+      await client.connect();
       if (!process.env.MONGO_QUALI_COLLECTION_NAME) throw new Error("Class qualifying collection name not specified");
       const data = await db.collection(process.env.MONGO_QUALI_COLLECTION_NAME).find().toArray();
       res.json(data);
@@ -144,8 +149,8 @@ const server = () => {
   });
 
   app.get("/raceresults", async (req, res) => {
-    await client.connect();
     try {
+      await client.connect();
       const fetchedData = await raceCollection.find().toArray();
       const entrylistPromises: Promise<WithId<EntrylistEntry> | null>[] = [];
 
