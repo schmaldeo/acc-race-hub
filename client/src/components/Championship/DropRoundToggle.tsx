@@ -4,9 +4,7 @@ import { DropRoundToggleProps } from "../types";
 
 function DropRoundToggle({ handleDropRoundClick, showDropRound }: DropRoundToggleProps) {
   return (
-    <div className="switch-el">
-      <ToggleButton value="drop" onChange={handleDropRoundClick} selected={showDropRound}>Toggle drop round</ToggleButton>
-    </div>
+    <ToggleButton sx={{ mt: 2, mb: 2 }} value="drop" onChange={handleDropRoundClick} selected={showDropRound}>Toggle drop round</ToggleButton>
   );
 }
 

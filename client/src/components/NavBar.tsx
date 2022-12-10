@@ -4,58 +4,30 @@ import Brightness3Icon from "@mui/icons-material/Brightness3";
 import LightMode from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
-  Toolbar, IconButton, Drawer, Divider, List, Chip,
+  Toolbar, IconButton, Drawer, Divider, List, Chip, Box,
 } from "@mui/material";
 import {
   ChevronLeft, ChevronRight, EmojiEvents, SportsScore, Timer,
 } from "@mui/icons-material";
 import { styled, useTheme } from "@mui/material/styles";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-
-const drawerWidth = 250;
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+import Image from "mui-image";
+import AppBar from "./StyledComponents/AppBar";
+import DrawerHeader from "./StyledComponents/DrawerHeader";
 
 const Main = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: "center",
 }));
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
+const drawerWidth = 250;
 
 function NavBar() {
   const [blackTheme, setBlackTheme] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const theme = useTheme();
   const handleClick = () => {
     if (blackTheme) {
@@ -70,18 +42,28 @@ function NavBar() {
 
   return (
     <>
-      <AppBar position="sticky" open={open}>
+      <AppBar position="sticky" open={open} sx={{ display: "flex" }}>
         <Toolbar>
           <IconButton
             color="inherit"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ mr: 2, ...(open && { display: "none" }) }}
+            sx={{
+              mr: 2, display: "flex", ...(open && { display: "none" }),
+            }}
           >
             <MenuIcon />
           </IconButton>
+          <Box sx={{ justifySelf: "center" }}>
+            <Image
+              src="./BSKIT_Ukraine.png"
+              height="4rem"
+              width="auto"
+            />
+          </Box>
         </Toolbar>
       </AppBar>
+
       <Drawer
         sx={{
           width: drawerWidth,
@@ -101,7 +83,7 @@ function NavBar() {
         <Divider />
         <List>
           <ListItem>
-            <ListItemButton onClick={() => navigate("/championship")}>
+            <ListItemButton onClick={() => { navigate("/championship"); handleDrawerClose(); }}>
               <ListItemIcon>
                 <EmojiEvents />
               </ListItemIcon>
@@ -109,7 +91,7 @@ function NavBar() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton onClick={() => navigate("/races")}>
+            <ListItemButton onClick={() => { navigate("/races"); handleDrawerClose(); }}>
               <ListItemIcon>
                 <SportsScore />
               </ListItemIcon>
@@ -117,7 +99,7 @@ function NavBar() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton onClick={() => navigate("/classqualifying")}>
+            <ListItemButton onClick={() => { navigate("/classqualifying"); handleDrawerClose(); }}>
               <ListItemIcon>
                 <Timer />
               </ListItemIcon>

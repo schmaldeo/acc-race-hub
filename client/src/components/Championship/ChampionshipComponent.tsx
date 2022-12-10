@@ -6,7 +6,7 @@ import TeamsChampionship from "./TeamsChampionship";
 
 function Championship() {
   const [championshipToShow, setChampionshipToShow] = useState("drivers");
-  const [value, setValue] = useState(0);
+  const [tabSelected, setTabSelected] = useState(0);
 
   const handleClick = (c: string) => {
     switch (c) {
@@ -25,12 +25,12 @@ function Championship() {
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setTabSelected(newValue);
   };
 
   return (
     <>
-      <Tabs value={value} onChange={handleChange} centered>
+      <Tabs value={tabSelected} onChange={handleChange} centered>
         <Tab label="Drivers" onClick={() => handleClick("drivers")} />
         <Tab label="Teams" onClick={() => handleClick("teams")} />
         <Tab label="Constructors" onClick={() => handleClick("constructors")} />
