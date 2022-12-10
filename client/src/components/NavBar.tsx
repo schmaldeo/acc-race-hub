@@ -41,6 +41,7 @@ const AppBar = styled(MuiAppBar, {
 
 const Main = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
+  textAlign: "center",
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
