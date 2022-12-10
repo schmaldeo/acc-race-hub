@@ -1,4 +1,7 @@
-import { Dispatch, SetStateAction, ChangeEventHandler } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+} from "react";
 
 interface Driver {
   firstName: string,
@@ -109,5 +112,5 @@ export interface RaceSubcomponentsProps {
 
 export interface DropRoundToggleProps {
   showDropRound: boolean,
-  handleDropRoundClick:ChangeEventHandler<HTMLInputElement>
+  handleDropRoundClick:() => void
 }

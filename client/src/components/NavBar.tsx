@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import Brightness3Icon from "@mui/icons-material/Brightness3";
+import LightMode from "@mui/icons-material/LightMode";
 
 function NavBar() {
   const [blackTheme, setBlackTheme] = useState(false);
   const handleClick = () => {
     if (blackTheme) {
       setBlackTheme(false);
-      document.body.classList.add("body-gradient");
-      document.body.classList.remove("body-black");
     } else {
       setBlackTheme(true);
-      document.body.classList.add("body-black");
-      document.body.classList.remove("body-gradient");
     }
   };
   const navigate = useNavigate();
@@ -33,7 +32,9 @@ function NavBar() {
             Class qualifying
           </div>
         </button>
-        <button className="black-mode" type="button" onClick={handleClick}>Change theme</button>
+        <IconButton sx={{ width: "auto", height: "auto" }} onClick={handleClick}>
+          {blackTheme ? <Brightness3Icon /> : <LightMode />}
+        </IconButton>
       </nav>
       <Outlet />
     </div>

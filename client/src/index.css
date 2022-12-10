@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
-body {
+/* body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -43,7 +43,7 @@ body {
 
 .body-black {
   background-color: black;
-}
+} */
 
 
 .championship {
@@ -98,31 +98,8 @@ body {
 }
 
 .race-column {
-  width: 50px;
-  padding: 5px;
   background-repeat: no-repeat;
   background-position: center;
-}
-
-td {
-  text-align: center;
-}
-
-table, td, tr, th {
-  border: 1px solid white;
-  border-collapse: collapse;
-}
-
-table {
-  overflow: scroll;
-}
-
-tr {
-  height: 2rem;
-}
-
-table {
-  width: 90%;
 }
 
 .place {
@@ -238,21 +215,6 @@ nav > button {
   position: absolute;
   right: 0;
   height: inherit;
-}
-
-@media (max-width: 650px) {
-  .black-mode {
-    visibility: hidden;
-  }
-}
-
-@media (max-width: 400px) {
-  body {
-    width: 150%;
-  }
-  .body-gradient {
-    background: #1e0144;
-  }
 }
 
 .race > button {
