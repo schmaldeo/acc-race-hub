@@ -12,6 +12,7 @@ const db = client.db(process.env.MONGO_DB_NAME);
 export default async function teamsChamp() {
   if (!process.env.MONGO_TEAMS_COLLECTION_NAME) throw new Error("Teams collection name not provided");
   const teamsCollection = db.collection(process.env.MONGO_TEAMS_COLLECTION_NAME);
+  // Use aggregation to retrieve amounts of points from each teammate
   const arr = await teamsCollection.aggregate([
     {
       $lookup: {
@@ -26,6 +27,7 @@ export default async function teamsChamp() {
       },
     },
   ]).toArray();
+
   arr.forEach(async (e) => {
     await teamsCollection.updateOne({ _id: e._id }, flatten(e));
   });
