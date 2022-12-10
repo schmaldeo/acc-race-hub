@@ -19,30 +19,28 @@ function ConstructorsStandings() {
   if (error) return <span>{error.message}</span>;
 
   return (
-    <div className="championship constructors">
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Place</StyledTableCell>
-              <StyledTableCell>Car</StyledTableCell>
-              <StyledTableCell>Points</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data?.map((car: ConstructorsChampionshipEntry, index: number) => {
-              return (
-                <StyledTableRow key={car._id}>
-                  <StyledTableCell>{index + 1}</StyledTableCell>
-                  <StyledTableCell>{car.car}</StyledTableCell>
-                  <StyledTableCell>{car.points}</StyledTableCell>
-                </StyledTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+    <TableContainer component={Paper} sx={{ mt: 2 }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Place</StyledTableCell>
+            <StyledTableCell>Car</StyledTableCell>
+            <StyledTableCell>Points</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data?.map((car: ConstructorsChampionshipEntry, index: number) => {
+            return (
+              <StyledTableRow key={car._id}>
+                <StyledTableCell>{index + 1}</StyledTableCell>
+                <StyledTableCell>{car.car}</StyledTableCell>
+                <StyledTableCell>{car.points}</StyledTableCell>
+              </StyledTableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

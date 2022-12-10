@@ -79,8 +79,8 @@ function TeamsChampionship() {
     });
 
   return (
-    <div className="championship">
-      <Tabs value={tabSelected} onChange={handleChange} sx={{ mb: 10 }}>
+    <>
+      <Tabs value={tabSelected} onChange={handleChange} centered>
         <Tab label="Pro" onClick={() => handleClick("pro")} />
         <Tab label="Silver" onClick={() => handleClick("silver")} />
         <Tab label="AM" onClick={() => handleClick("am")} />
@@ -100,7 +100,7 @@ function TeamsChampionship() {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </>
   );
 }
 

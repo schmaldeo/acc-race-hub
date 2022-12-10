@@ -101,8 +101,8 @@ function DriversChampionship() {
     });
 
   return (
-    <div className="championship">
-      <Tabs value={tabSelected} onChange={handleChange}>
+    <>
+      <Tabs value={tabSelected} onChange={handleChange} centered>
         <Tab label="Pro" onClick={() => handleClick("pro")} />
         <Tab label="Silver" onClick={() => handleClick("silver")} />
         <Tab label="AM" onClick={() => handleClick("am")} />
@@ -133,7 +133,7 @@ function DriversChampionship() {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </>
   );
 }
 

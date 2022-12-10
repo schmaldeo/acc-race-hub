@@ -1,8 +1,16 @@
 import React from "react";
 import { useQuery } from "react-query";
 import { FidgetSpinner } from "react-loader-spinner";
-import { msToLaptime } from "../helpers";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import { ClassQualiEntry } from "../types";
+import { msToLaptime } from "../helpers";
+import StyledTableRow from "../StyledComponents/StyledTableRow";
+import StyledTableCell from "../StyledComponents/StyledTableCell";
 
 function ClassQuali() {
   const { isLoading, error, data } = useQuery<ClassQualiEntry[], Error>("classQ", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/classquali`).then((res) => res.json()));
@@ -12,28 +20,28 @@ function ClassQuali() {
   if (error) return <div>{error.message}</div>;
 
   return (
-    <div className="classquali">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Valid laps</th>
-            <th>Best lap</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Valid laps</StyledTableCell>
+            <StyledTableCell>Best lap</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {data?.map((driver: ClassQualiEntry) => {
             return (
-              <tr key={driver.playerId}>
-                <td>{driver.name}</td>
-                <td>{driver.amountOfValidLaps}</td>
-                <td>{msToLaptime(driver.bestLap)}</td>
-              </tr>
+              <StyledTableRow key={driver.playerId}>
+                <StyledTableCell>{driver.name}</StyledTableCell>
+                <StyledTableCell>{driver.amountOfValidLaps}</StyledTableCell>
+                <StyledTableCell>{msToLaptime(driver.bestLap)}</StyledTableCell>
+              </StyledTableRow>
             );
           })}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
