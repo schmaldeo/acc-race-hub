@@ -41,7 +41,6 @@ const raceResults = () => {
 
       // make sure it only processes race dumps
       if (json.sessionType === "R") {
-        // Push relevant info on finishing order to the array
         const leaderboard: ParsedLeaderboardEntry[] = [];
         const lbForManufacturers: ManufacturersElement[] = [];
         const laps = json.sessionResult.leaderBoardLines[0].timing.lapCount;
@@ -87,6 +86,7 @@ const raceResults = () => {
           [index: string]: ClassesGroupped[]
         } = { pro: [], silver: [], am: [] };
 
+        // This is required due to how ACC indexes its classes
         const classes: {
           [index: number]: string;
         } = {
@@ -112,6 +112,7 @@ const raceResults = () => {
           });
 
           classesGroupped[c].sort((a, b) => {
+            // Sort -1's at the end because these are DNS's
             if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === a.playerId) as ParsedLeaderboardEntry) === -1) {
               return 1;
             } if (leaderboard.indexOf(leaderboard.find((e) => e.playerId === b.playerId) as ParsedLeaderboardEntry) === -1) {
@@ -128,6 +129,7 @@ const raceResults = () => {
           classesGroupped[c].forEach(async (driver, index) => {
             const existing = await champCollection.findOne({ playerId: driver.playerId });
             if (driver.result) {
+              // TODO make a smarter way of figuring out if a driver has DNF'd
               let dnf;
               driver.result.lapCount < laps - 10 ? dnf = true : dnf = false;
 

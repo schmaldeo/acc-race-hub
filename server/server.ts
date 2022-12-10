@@ -17,24 +17,31 @@ import {
 
 dotenv.config();
 
+// Typing the carsMap import, otherwise getting a TS error about mismatched index type
 const carsMap: {[index: number]: string} = _carsMap;
 
 const uri = process.env.MONGO_URI;
 if (!uri) throw new Error("Mongo URI not specified");
 if (!process.env.MONGO_ENTRYLIST_COLLECTION_NAME
   || !process.env.MONGO_RACE_COLLECTION_NAME
-  || !process.env.MONGO_STANDINGS_COLLECTION_NAME) throw new Error("Required environment variables not specified (collection names)");
+  || !process.env.MONGO_STANDINGS_COLLECTION_NAME
+  || !process.env.MONGO_MANUFACTURERS_STANDINGS_COLLECTION_NAME
+  || !process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME) throw new Error("Required environment variables not specified (collection names)");
 const client = new MongoClient(uri);
 const db = client.db(process.env.MONGO_DB_NAME);
 const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME);
 const raceCollection = db.collection<Races>(process.env.MONGO_RACE_COLLECTION_NAME);
 const standingsCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME);
+const manufacturersStandings = db.collection<Manufacturer>(process.env.MONGO_MANUFACTURERS_STANDINGS_COLLECTION_NAME);
+const classQualifyingCollection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME);
 const port = process.env.PORT || 4001;
 
 const server = () => {
   const app = express();
 
   app.use(cors());
+
+  // GET methods
 
   app.get("/champ", async (req, res) => {
     try {
@@ -52,6 +59,7 @@ const server = () => {
       }));
       const entryListArr = await Promise.all(entrylistPromises);
 
+      // This is required due to how ACC indexes its classes
       const classes: {
         [index: number]: DriverInServerChampionshipRes[]
       } = {
@@ -61,6 +69,7 @@ const server = () => {
       };
 
       const season = await db.collection("seasons").find().toArray();
+      // TODO need to allow for multiple seasons, use URL params to retrieve which season is queried
       lb.season = season[0].races;
 
       entryListArr.forEach((driver) => {
@@ -95,6 +104,8 @@ const server = () => {
         [c: string]: Team[]
       } = { pro: [], silver: [], am: [] };
       const fetchedData = await db.collection<Team>("teams").find().toArray();
+      // Parsing the points into required format as well as adding drivers' points if theres 2 of them in a team
+      // TODO allow more than 2 drivers in the team
       fetchedData.forEach((entry) => {
         if (entry.points.length === 2) {
           entry.pointsCalculated = {
@@ -123,7 +134,7 @@ const server = () => {
   app.get("/constructors", async (req, res) => {
     try {
       await client.connect();
-      const data: WithId<Manufacturer>[] = await db.collection<Manufacturer>("manufacturer_standings").find().toArray();
+      const data: WithId<Manufacturer>[] = await manufacturersStandings.find().toArray();
       data.sort((a, b) => b.points - a.points);
       res.json(data);
     } catch (err) {
@@ -137,8 +148,7 @@ const server = () => {
   app.get("/classquali", async (req, res) => {
     try {
       await client.connect();
-      if (!process.env.MONGO_QUALI_COLLECTION_NAME) throw new Error("Class qualifying collection name not specified");
-      const data = await db.collection(process.env.MONGO_QUALI_COLLECTION_NAME).find().toArray();
+      const data = await classQualifyingCollection.find().toArray();
       res.json(data);
     } catch (err) {
       console.error(`Error fetching class qualifying results ${err}`);
@@ -174,6 +184,7 @@ const server = () => {
           pro: [], silver: [], am: [],
         };
 
+        // This is required due to how ACC indexes its classes
         const classes: {
           [index: number]: DriverInRaceResults[]
         } = {
