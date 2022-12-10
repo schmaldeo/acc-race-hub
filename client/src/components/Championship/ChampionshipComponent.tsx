@@ -1,3 +1,4 @@
+import { Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
 import ConstructorsStandings from "./ConstructorsStandings";
 import DriversChampionship from "./DriversChampionship";
@@ -5,6 +6,7 @@ import TeamsChampionship from "./TeamsChampionship";
 
 function Championship() {
   const [championshipToShow, setChampionshipToShow] = useState("drivers");
+  const [value, setValue] = useState(0);
 
   const handleClick = (c: string) => {
     switch (c) {
@@ -22,13 +24,17 @@ function Championship() {
     }
   };
 
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <>
-      <div className="champ-select-btns">
-        <button type="button" className="class-btn" onClick={() => handleClick("drivers")}>Drivers</button>
-        <button type="button" className="class-btn" onClick={() => handleClick("teams")}>Teams</button>
-        <button type="button" className="class-btn" onClick={() => handleClick("constructors")}>Constructors</button>
-      </div>
+      <Tabs value={value} onChange={handleChange} centered>
+        <Tab label="Drivers" onClick={() => handleClick("drivers")} />
+        <Tab label="Teams" onClick={() => handleClick("teams")} />
+        <Tab label="Constructors" onClick={() => handleClick("constructors")} />
+      </Tabs>
 
       {championshipToShow === "drivers" && <DriversChampionship />}
       {championshipToShow === "teams" && <TeamsChampionship />}
