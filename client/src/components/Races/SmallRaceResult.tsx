@@ -19,7 +19,7 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   return (
     <Paper variant="outlined" sx={{ width: 1, height: 300, mb: 5 }}>
       <ToggleButton value="detailed-results" onClick={handleClick} selected={opened}>Detailed results</ToggleButton>
-      <Typography>{race.race}</Typography>
+      <Typography sx={{ marginY: 1 }}>{race.race}</Typography>
       <Typography>
         Track:&nbsp;
         {parseTrackName(race.track)}
