@@ -27,8 +27,7 @@ const drawerWidth = 250;
 
 function NavBar() {
   const [blackTheme, setBlackTheme] = useState(false);
-  // TODO add something to the homepage because the drawer opens on every refresh
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
   const handleClick = () => {
     if (blackTheme) {
@@ -57,7 +56,7 @@ function NavBar() {
           </IconButton>
           <Box sx={{ alignSelf: "center" }}>
             <Image
-              src="./BSKIT_Ukraine.png"
+              src="./banner.png"
               height="4rem"
               width="auto"
             />
@@ -85,7 +84,7 @@ function NavBar() {
         <Divider />
         <List>
           <ListItem>
-            <ListItemButton onClick={() => { navigate("/championship"); handleDrawerClose(); }}>
+            <ListItemButton onClick={() => { navigate("/"); handleDrawerClose(); }}>
               <ListItemIcon>
                 <EmojiEvents />
               </ListItemIcon>

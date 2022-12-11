@@ -11,9 +11,9 @@ import Races from "./components/Races/Races";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<NavBar />}>
+      <Route path="/*" element={<NavBar />}>
         <Route path="races" element={<Races />} />
-        <Route path="championship" element={<Championship />} />
+        <Route index element={<Championship />} />
         <Route path="classqualifying" element={<ClassQuali />} />
       </Route>
     </Routes>
