@@ -1,4 +1,7 @@
 import React from "react";
+import {
+  Paper, ToggleButton, Typography, Card, Box,
+} from "@mui/material";
 import { RaceSubcomponentsProps } from "../types";
 import { parseTrackName } from "../helpers";
 
@@ -14,15 +17,15 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   };
 
   return (
-    <div key={race.track} className="race">
-      <button type="button" onClick={handleClick}>SHOW DETAILED RESULTS</button>
-      <div>{race.race}</div>
-      <div>
+    <Paper variant="outlined" sx={{ width: 1, height: 300, mb: 5 }}>
+      <ToggleButton value="detailed-results" onClick={handleClick} selected={opened}>Detailed results</ToggleButton>
+      <Typography>{race.race}</Typography>
+      <Typography>
         Track:&nbsp;
         {parseTrackName(race.track)}
-      </div>
-      <div className="results">
-        <div className="class-results">
+      </Typography>
+      <Box sx={{ display: "flex" }}>
+        <Card variant="outlined" sx={{ margin: 2, width: 1 / 3 }}>
           <h4>Pro:</h4>
           {race.results.pro.slice(0, 3).map((driver, index) => {
             return (
@@ -36,8 +39,8 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
               </div>
             );
           })}
-        </div>
-        <div className="class-results">
+        </Card>
+        <Card raised variant="outlined" sx={{ margin: 2, width: 1 / 3 }}>
           <h4>Silver:</h4>
           {race.results.silver.slice(0, 3).map((driver, index) => {
             return (
@@ -51,8 +54,8 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
               </div>
             );
           })}
-        </div>
-        <div className="class-results">
+        </Card>
+        <Card variant="outlined" sx={{ margin: 2, width: 1 / 3, pb: 2 }}>
           <h4>AM:</h4>
           {race.results.am.slice(0, 3).map((driver, index) => {
             return (
@@ -66,9 +69,9 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
               </div>
             );
           })}
-        </div>
-      </div>
-    </div>
+        </Card>
+      </Box>
+    </Paper>
   );
 }
 

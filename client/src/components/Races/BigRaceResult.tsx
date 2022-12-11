@@ -1,9 +1,20 @@
 import React, { useState } from "react";
+import {
+  Paper, Tab, Tabs, ToggleButton, Typography, Box,
+} from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import StyledTableCell from "../StyledComponents/StyledTableCell";
+import StyledTableRow from "../StyledComponents/StyledTableRow";
 import { RaceResultsEntry, RaceSubcomponentsProps } from "../types";
 import { msToLaptime, parseTotalRaceTime, parseTrackName } from "../helpers";
 
 function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   const [classToDisplay, setClassToDisplay] = useState("pro");
+  const [tabSelected, setTabSelected] = useState(0);
 
   const handleClassClick = (c: string) => {
     switch (c) {
@@ -25,6 +36,10 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
     opened ? setOpened(false) : setOpened(true);
   };
 
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabSelected(newValue);
+  };
+
   const classes: {
     [key: string]: RaceResultsEntry[]
   } = {
@@ -38,17 +53,17 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
       .filter((e) => e.lapCount > classes[classToDisplay][0].lapCount - 5)
       .reduce((prev, curr) => (prev.bestLap < curr.bestLap ? prev : curr)));
   const fastestLapTd = (bestLap: number, index: number) => {
-    return <td className={fastestLap === index ? "purple" : ""}>{msToLaptime(bestLap)}</td>;
+    return <StyledTableCell className={fastestLap === index ? "purple" : ""}>{msToLaptime(bestLap)}</StyledTableCell>;
   };
   const raceResult = classes[classToDisplay]?.map((driver, index) => {
     return (
-      <tr key={driver.driver.playerID}>
-        <td>{index + 1}</td>
-        <td>{driver.number}</td>
-        <td>{`${driver.driver.firstName} ${driver.driver.lastName}`}</td>
-        <td>{driver.car}</td>
+      <StyledTableRow key={driver.driver.playerID}>
+        <StyledTableCell>{index + 1}</StyledTableCell>
+        <StyledTableCell>{driver.number}</StyledTableCell>
+        <StyledTableCell>{`${driver.driver.firstName} ${driver.driver.lastName}`}</StyledTableCell>
+        <StyledTableCell>{driver.car}</StyledTableCell>
         {fastestLapTd(driver.bestLap, index)}
-        <td>
+        <StyledTableCell>
           {parseTotalRaceTime(
             driver.totalTime,
             classes[classToDisplay][0].totalTime,
@@ -56,42 +71,42 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
             driver.lapCount,
             index === 0,
           )}
-        </td>
-      </tr>
+        </StyledTableCell>
+      </StyledTableRow>
     );
   });
 
   return (
-    <div key={race.track} className="race">
-      <button type="button" onClick={handleClick}>CLOSE DETAILED RESULTS</button>
-      <div>{race.race}</div>
-      <div>
+    <Paper variant="outlined" sx={{ width: 1, mb: 5 }}>
+      <ToggleButton value="detailed-results" onClick={handleClick} selected={opened}>Detailed results</ToggleButton>
+      <Typography>{race.race}</Typography>
+      <Typography>
         Track:&nbsp;
         {parseTrackName(race.track)}
-      </div>
-      <div className="champ-btns ">
-        <button type="button" className="class-btn widget-champ-btn pro" onClick={() => handleClassClick("pro")}>Pro</button>
-        <button type="button" className="class-btn widget-champ-btn silver" onClick={() => handleClassClick("silver")}>Silver</button>
-        <button type="button" className="class-btn widget-champ-btn am" onClick={() => handleClassClick("am")}>AM</button>
-      </div>
-      <div className="results">
-        <table>
-          <thead>
-            <tr>
-              <th className="place">Place</th>
-              <th className="car-number">Car #</th>
-              <th className="driver-name">Name</th>
-              <th className="car">Car</th>
-              <th className="best-lap"> Best lap</th>
-              <th className="gap">Gap</th>
-            </tr>
-          </thead>
-          <tbody>
+      </Typography>
+      <Tabs value={tabSelected} onChange={handleChange} centered>
+        <Tab label="Pro" onClick={() => handleClassClick("pro")} />
+        <Tab label="Silver" onClick={() => handleClassClick("silver")} />
+        <Tab label="AM" onClick={() => handleClassClick("am")} />
+      </Tabs>
+      <TableContainer component={Box} sx={{ padding: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Place</StyledTableCell>
+              <StyledTableCell>Car #</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Car</StyledTableCell>
+              <StyledTableCell>Best lap</StyledTableCell>
+              <StyledTableCell>Gap</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {raceResult}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 }
 

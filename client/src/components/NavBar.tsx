@@ -27,6 +27,7 @@ const drawerWidth = 250;
 
 function NavBar() {
   const [blackTheme, setBlackTheme] = useState(false);
+  // TODO add something to the homepage because the drawer opens on every refresh
   const [open, setOpen] = useState(true);
   const theme = useTheme();
   const handleClick = () => {
@@ -42,8 +43,8 @@ function NavBar() {
 
   return (
     <>
-      <AppBar position="sticky" open={open} sx={{ display: "flex" }}>
-        <Toolbar>
+      <AppBar position="sticky" open={open}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
             onClick={handleDrawerOpen}
@@ -54,13 +55,14 @@ function NavBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Box sx={{ justifySelf: "center" }}>
+          <Box sx={{ alignSelf: "center" }}>
             <Image
               src="./BSKIT_Ukraine.png"
               height="4rem"
               width="auto"
             />
           </Box>
+          <Box sx={{ display: "hidden", mr: 5 }} />
         </Toolbar>
       </AppBar>
 
