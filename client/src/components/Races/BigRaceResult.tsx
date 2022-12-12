@@ -30,9 +30,11 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
     .indexOf(classes[classToDisplay]
       .filter((e) => e.lapCount > classes[classToDisplay][0].lapCount - 5)
       .reduce((prev, curr) => (prev.bestLap < curr.bestLap ? prev : curr)));
+
   const fastestLapTd = (bestLap: number, index: number) => {
     return <StyledTableCell className={fastestLap === index ? "purple" : ""}>{msToLaptime(bestLap)}</StyledTableCell>;
   };
+
   const raceResult = classes[classToDisplay]?.map((driver, index) => {
     return (
       <StyledTableRow key={driver.driver.playerID}>
@@ -55,7 +57,7 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   });
 
   return (
-    <Paper variant="outlined" sx={{ width: 1, mb: 5 }}>
+    <Paper variant="outlined" sx={{ width: 1, mb: 5, paddingY: 1 }}>
       {/* TODO make a component to display race info in these */}
       <ToggleButton value="detailed-results" onClick={handleClick} selected={opened}>Detailed results</ToggleButton>
       <Typography sx={{ marginY: 1 }}>{race.race}</Typography>

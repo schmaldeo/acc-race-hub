@@ -88,7 +88,7 @@ function DriversChampionship() {
               <StyledTableCell>Points</StyledTableCell>
               {data?.season.map((r: string) => {
                 return (
-                  <StyledTableCell data-tip data-for={`${r}tip`} key={r} className={`race-column ${flagsMap[r]}`}>
+                  <StyledTableCell data-tip data-for={`${r}tip`} key={r} sx={{ backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundImage: `url(/flags/4x3/${flagsMap[r]}.svg)` }}>
                     <ReactTooltip className="tooltip" id={`${r}tip`} place="top" effect="solid">
                       {parseTrackName(r)}
                     </ReactTooltip>
