@@ -1,4 +1,5 @@
-import {
+/* eslint-disable no-unused-vars */
+import React, {
   Dispatch,
   SetStateAction,
 } from "react";
@@ -113,4 +114,9 @@ export interface RaceSubcomponentsProps {
 export interface DropRoundToggleProps {
   showDropRound: boolean,
   handleDropRoundClick:() => void
+}
+
+export interface ClassSelectorProps {
+  classToDisplay: number;
+  handleClassChange: (event: React.SyntheticEvent, newValue: number) => void;
 }
