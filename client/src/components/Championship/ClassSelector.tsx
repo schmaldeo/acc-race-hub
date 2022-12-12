@@ -2,7 +2,10 @@ import React from "react";
 import { Tabs, Tab } from "@mui/material";
 import { ClassSelectorProps } from "../types";
 
-function ClassSelector({ classToDisplay, handleClassChange }: ClassSelectorProps) {
+function ClassSelector({ classToDisplay, setClassToDisplay }: ClassSelectorProps) {
+  const handleClassChange = (event: React.SyntheticEvent, newValue: number) => {
+    setClassToDisplay(newValue);
+  };
   return (
     <Tabs value={classToDisplay} onChange={handleClassChange} centered>
       <Tab label="Pro" />

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, {
+import {
   Dispatch,
   SetStateAction,
 } from "react";
@@ -118,5 +118,5 @@ export interface DropRoundToggleProps {
 
 export interface ClassSelectorProps {
   classToDisplay: number;
-  handleClassChange: (event: React.SyntheticEvent, newValue: number) => void;
+  setClassToDisplay: Dispatch<SetStateAction<number>>
 }

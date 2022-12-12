@@ -28,10 +28,6 @@ function DriversChampionship() {
 
   const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/champ`).then((res) => res.json()));
 
-  const handleClassChange = (event: React.SyntheticEvent, newValue: number) => {
-    setClassToDisplay(newValue);
-  };
-
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 
   if (error) return <span>{error.message}</span>;
@@ -83,7 +79,7 @@ function DriversChampionship() {
 
   return (
     <>
-      <ClassSelector classToDisplay={classToDisplay} handleClassChange={handleClassChange} />
+      <ClassSelector classToDisplay={classToDisplay} setClassToDisplay={setClassToDisplay} />
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <TableContainer component={Paper}>
         <Table>

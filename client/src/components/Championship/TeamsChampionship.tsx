@@ -21,10 +21,6 @@ function TeamsChampionship() {
     showDropRound ? setShowDropRound(false) : setShowDropRound(true);
   };
 
-  const handleClassChange = (event: React.SyntheticEvent, newValue: number) => {
-    setClassToDisplay(newValue);
-  };
-
   const { isLoading, error, data } = useQuery<TeamsChampionshipData, Error>("teamsData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/teams`).then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
@@ -57,7 +53,7 @@ function TeamsChampionship() {
 
   return (
     <>
-      <ClassSelector classToDisplay={classToDisplay} handleClassChange={handleClassChange} />
+      <ClassSelector classToDisplay={classToDisplay} setClassToDisplay={setClassToDisplay} />
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <TableContainer component={Paper}>
         <Table>
