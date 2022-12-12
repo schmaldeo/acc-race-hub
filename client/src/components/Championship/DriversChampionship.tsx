@@ -8,13 +8,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Tabs, Tab } from "@mui/material";
 import StyledTableCell from "../StyledComponents/StyledTableCell";
 import StyledTableRow from "../StyledComponents/StyledTableRow";
 import { ClassEntry, ChampionshipData } from "../types";
 import { parseTrackName } from "../helpers";
 import _flagsMap from "../flagsMap.json";
 import DropRoundToggle from "./DropRoundToggle";
+import ClassSelector from "./ClassSelector";
 
 const flagsMap: { [country: string]: string } = _flagsMap;
 
@@ -83,11 +83,7 @@ function DriversChampionship() {
 
   return (
     <>
-      <Tabs value={classToDisplay} onChange={handleClassChange} centered>
-        <Tab label="Pro" />
-        <Tab label="Silver" />
-        <Tab label="AM" />
-      </Tabs>
+      <ClassSelector classToDisplay={classToDisplay} handleClassChange={handleClassChange} />
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <TableContainer component={Paper}>
         <Table>

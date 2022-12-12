@@ -7,11 +7,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Tab, Tabs } from "@mui/material";
 import DropRoundToggle from "./DropRoundToggle";
 import { TeamsChampionshipData, Team } from "../types";
 import StyledTableCell from "../StyledComponents/StyledTableCell";
 import StyledTableRow from "../StyledComponents/StyledTableRow";
+import ClassSelector from "./ClassSelector";
 
 function TeamsChampionship() {
   const [showDropRound, setShowDropRound] = useState(true);
@@ -57,11 +57,7 @@ function TeamsChampionship() {
 
   return (
     <>
-      <Tabs value={classToDisplay} onChange={handleClassChange} centered>
-        <Tab label="Pro" />
-        <Tab label="Silver" />
-        <Tab label="AM" />
-      </Tabs>
+      <ClassSelector classToDisplay={classToDisplay} handleClassChange={handleClassChange} />
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <TableContainer component={Paper}>
         <Table>
