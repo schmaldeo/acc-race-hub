@@ -15,8 +15,9 @@ It's using React for front-end, Express.js for back-end and MongoDB as a databas
 1. Run `git clone https://github.com/schmatteo/acc_race_hub.git & cd acc-race-hub/client` or [download the ZIP](https://github.com/schmatteo/acc-race-hub/archive/refs/heads/master.zip) and open the terminal in `client` directory
 2. Run `npm install`
 3. OPTIONAL: Insert your own `favicon.ico` and logos into `public` folder
-3. Run `npm run build`
-4. Deploy the `build` directory to a webserver 
+4. Add required environment variables to the `.env` file
+5. Run `npm run build`
+6. Deploy the `build` directory to a webserver 
 
 # Back-end
 ## Features
