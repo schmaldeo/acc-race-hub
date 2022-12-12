@@ -39,7 +39,7 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
       }}
       >
         {Object.keys(classes).map((c) => {
-          return <ClassRaceResult result={classes[c]} c={c} />;
+          return <ClassRaceResult result={classes[c]} c={c} key={c} />;
         })}
       </Box>
     </Paper>

@@ -32,7 +32,7 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
       .reduce((prev, curr) => (prev.bestLap < curr.bestLap ? prev : curr)));
 
   const fastestLapTd = (bestLap: number, index: number) => {
-    return <StyledTableCell className={fastestLap === index ? "purple" : ""}>{msToLaptime(bestLap)}</StyledTableCell>;
+    return <StyledTableCell sx={{ backgroundColor: `${fastestLap === index && "purple"}` }}>{msToLaptime(bestLap)}</StyledTableCell>;
   };
 
   const raceResult = classes[classToDisplay]?.map((driver, index) => {
@@ -70,12 +70,12 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>Place</StyledTableCell>
-              <StyledTableCell>Car #</StyledTableCell>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Car</StyledTableCell>
-              <StyledTableCell>Best lap</StyledTableCell>
-              <StyledTableCell>Gap</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 15 }}>Place</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 15 }}>Car #</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 4 }}>Name</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 5 }}>Car</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 8 }}>Best lap</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 8 }}>Gap</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
