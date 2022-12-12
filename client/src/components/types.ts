@@ -29,7 +29,6 @@ export interface ClassQualiEntry {
   playerId: string,
   bestLap: number,
   laps: number[],
-  amountOfValidLaps: number,
 }
 
 // CHAMPIONSHIP

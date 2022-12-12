@@ -13,7 +13,7 @@ const classQuali = () => {
 
   const leaderboard: Leaderboard[] = [];
 
-  const resultsFolder = process.env.RESULT_FOLDER;
+  const resultsFolder = process.env.RESULTS_FOLDER;
   if (!resultsFolder) throw new Error("no result folder provided");
   chokidar.watch(resultsFolder, { ignoreInitial: true }).on("add", async (file) => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
@@ -39,7 +39,6 @@ const classQuali = () => {
             }
           }
         });
-        driver.amountOfValidLaps = driver.laps.length;
         delete driver.carId;
       });
 
@@ -58,7 +57,6 @@ const classQuali = () => {
                 { playerId: driver.playerId },
                 {
                   $push: { laps: { $each: driver.laps } },
-                  $inc: { amountOfValidLaps: driver.amountOfValidLaps },
                   $set: { bestLap: newBestLap },
                 },
               );

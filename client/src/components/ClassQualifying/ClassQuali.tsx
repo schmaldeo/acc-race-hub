@@ -19,6 +19,9 @@ function ClassQuali() {
 
   if (error) return <div>{error.message}</div>;
 
+  // TODO add sorting by best lap
+  data?.sort((a, b) => b.laps.length - a.laps.length);
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -34,7 +37,7 @@ function ClassQuali() {
             return (
               <StyledTableRow key={driver.playerId}>
                 <StyledTableCell>{driver.name}</StyledTableCell>
-                <StyledTableCell>{driver.amountOfValidLaps}</StyledTableCell>
+                <StyledTableCell>{driver.laps.length}</StyledTableCell>
                 <StyledTableCell>{msToLaptime(driver.bestLap)}</StyledTableCell>
               </StyledTableRow>
             );
