@@ -14,32 +14,15 @@ import StyledTableCell from "../StyledComponents/StyledTableCell";
 import StyledTableRow from "../StyledComponents/StyledTableRow";
 
 function TeamsChampionship() {
-  const [classToDisplay, setClassToDisplay] = useState("Pro");
   const [showDropRound, setShowDropRound] = useState(true);
-  const [tabSelected, setTabSelected] = useState(0);
+  const [classToDisplay, setClassToDisplay] = useState(0);
 
   const handleDropRoundClick = () => {
     showDropRound ? setShowDropRound(false) : setShowDropRound(true);
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabSelected(newValue);
-  };
-
-  const handleClick = (c: string) => {
-    switch (c) {
-      case "pro":
-        setClassToDisplay("pro");
-        break;
-      case "silver":
-        setClassToDisplay("silver");
-        break;
-      case "am":
-        setClassToDisplay("am");
-        break;
-      default:
-        setClassToDisplay("pro");
-    }
+  const handleClassChange = (event: React.SyntheticEvent, newValue: number) => {
+    setClassToDisplay(newValue);
   };
 
   const { isLoading, error, data } = useQuery<TeamsChampionshipData, Error>("teamsData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/teams`).then((res) => res.json()));
@@ -48,13 +31,7 @@ function TeamsChampionship() {
 
   if (error) return <span>{error.message}</span>;
 
-  const classes: {
-    [key: string]: Team[] | undefined,
-  } = {
-    pro: data?.pro,
-    silver: data?.silver,
-    am: data?.am,
-  };
+  const classes: Array<Team[] | undefined> = [data?.pro, data?.silver, data?.am];
 
   Object.values(classes).forEach((arr) => arr?.sort(
     (a: Team, b: Team) => {
@@ -63,7 +40,7 @@ function TeamsChampionship() {
     },
   ));
 
-  const leaderboard = (classes[classToDisplay] || classes.pro)
+  const leaderboard = (classes[classToDisplay] || classes[0])
     ?.map((team: Team, index: number) => {
       return (
         <StyledTableRow key={team._id}>
@@ -80,10 +57,10 @@ function TeamsChampionship() {
 
   return (
     <>
-      <Tabs value={tabSelected} onChange={handleChange} centered>
-        <Tab label="Pro" onClick={() => handleClick("pro")} />
-        <Tab label="Silver" onClick={() => handleClick("silver")} />
-        <Tab label="AM" onClick={() => handleClick("am")} />
+      <Tabs value={classToDisplay} onChange={handleClassChange} centered>
+        <Tab label="Pro" />
+        <Tab label="Silver" />
+        <Tab label="AM" />
       </Tabs>
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <TableContainer component={Paper}>

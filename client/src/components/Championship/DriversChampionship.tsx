@@ -19,9 +19,8 @@ import DropRoundToggle from "./DropRoundToggle";
 const flagsMap: { [country: string]: string } = _flagsMap;
 
 function DriversChampionship() {
-  const [classToDisplay, setClassToDisplay] = useState("Pro");
   const [showDropRound, setShowDropRound] = useState(true);
-  const [tabSelected, setTabSelected] = useState(0);
+  const [classToDisplay, setClassToDisplay] = useState(0);
 
   const handleDropRoundClick = () => {
     showDropRound ? setShowDropRound(false) : setShowDropRound(true);
@@ -29,37 +28,19 @@ function DriversChampionship() {
 
   const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/champ`).then((res) => res.json()));
 
-  const handleClick = (c: string) => {
-    switch (c) {
-      case "pro":
-        setClassToDisplay("pro");
-        break;
-      case "silver":
-        setClassToDisplay("silver");
-        break;
-      case "am":
-        setClassToDisplay("am");
-        break;
-      default:
-        setClassToDisplay("pro");
-    }
-  };
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabSelected(newValue);
+  const handleClassChange = (event: React.SyntheticEvent, newValue: number) => {
+    setClassToDisplay(newValue);
   };
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
 
   if (error) return <span>{error.message}</span>;
 
-  const classes: {
-    [key: string]: ClassEntry[] | undefined,
-  } = {
-    pro: data?.classStandings.pro,
-    silver: data?.classStandings.silver,
-    am: data?.classStandings.am,
-  };
+  const classes: Array<ClassEntry[] | undefined> = [
+    data?.classStandings.pro,
+    data?.classStandings.silver,
+    data?.classStandings.am,
+  ];
 
   Object.values(classes).forEach((arr) => arr?.sort(
     (a: ClassEntry, b: ClassEntry) => {
@@ -83,7 +64,7 @@ function DriversChampionship() {
       );
   };
 
-  const leaderboard = (classes[classToDisplay] || classes.pro)
+  const leaderboard = (classes[classToDisplay] || classes[0])
     ?.map((driver: ClassEntry, index: number) => {
       return (
         <StyledTableRow key={driver.driver.playerID}>
@@ -102,10 +83,10 @@ function DriversChampionship() {
 
   return (
     <>
-      <Tabs value={tabSelected} onChange={handleChange} centered>
-        <Tab label="Pro" onClick={() => handleClick("pro")} />
-        <Tab label="Silver" onClick={() => handleClick("silver")} />
-        <Tab label="AM" onClick={() => handleClick("am")} />
+      <Tabs value={classToDisplay} onChange={handleClassChange} centered>
+        <Tab label="Pro" />
+        <Tab label="Silver" />
+        <Tab label="AM" />
       </Tabs>
       <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
       <TableContainer component={Paper}>
