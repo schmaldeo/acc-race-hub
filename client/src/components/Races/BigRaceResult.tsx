@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Paper, Tab, Tabs, ToggleButton, Typography, Box,
+  Paper, ToggleButton, Typography, Box,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,44 +9,22 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import StyledTableCell from "../StyledComponents/StyledTableCell";
 import StyledTableRow from "../StyledComponents/StyledTableRow";
+import ClassSelector from "../ClassSelector";
 import { RaceResultsEntry, RaceSubcomponentsProps } from "../types";
 import { msToLaptime, parseTotalRaceTime, parseTrackName } from "../helpers";
 
 function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
-  const [classToDisplay, setClassToDisplay] = useState("pro");
-  const [tabSelected, setTabSelected] = useState(0);
-
-  const handleClassClick = (c: string) => {
-    switch (c) {
-      case "pro":
-        setClassToDisplay("pro");
-        break;
-      case "silver":
-        setClassToDisplay("silver");
-        break;
-      case "am":
-        setClassToDisplay("am");
-        break;
-      default:
-        setClassToDisplay("pro");
-    }
-  };
+  const [classToDisplay, setClassToDisplay] = useState(0);
 
   const handleClick = () => {
     opened ? setOpened(false) : setOpened(true);
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabSelected(newValue);
-  };
-
-  const classes: {
-    [key: string]: RaceResultsEntry[]
-  } = {
-    pro: race.results.pro,
-    silver: race.results.silver,
-    am: race.results.am,
-  };
+  const classes: Array<RaceResultsEntry[]> = [
+    race.results.pro,
+    race.results.silver,
+    race.results.am,
+  ];
 
   const fastestLap = classes[classToDisplay]
     .indexOf(classes[classToDisplay]
@@ -85,11 +63,7 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
         Track:&nbsp;
         {parseTrackName(race.track)}
       </Typography>
-      <Tabs value={tabSelected} onChange={handleChange} centered>
-        <Tab label="Pro" onClick={() => handleClassClick("pro")} />
-        <Tab label="Silver" onClick={() => handleClassClick("silver")} />
-        <Tab label="AM" onClick={() => handleClassClick("am")} />
-      </Tabs>
+      <ClassSelector classToDisplay={classToDisplay} setClassToDisplay={setClassToDisplay} />
       <TableContainer component={Box} sx={{ padding: 2 }}>
         <Table>
           <TableHead>
