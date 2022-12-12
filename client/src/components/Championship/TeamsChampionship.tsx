@@ -55,9 +55,9 @@ function TeamsChampionship() {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>Place</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 5 }}>Place</StyledTableCell>
               <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Points</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 5 }}>Points</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

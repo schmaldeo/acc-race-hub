@@ -81,14 +81,21 @@ function DriversChampionship() {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>Place</StyledTableCell>
-              <StyledTableCell>Car #</StyledTableCell>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Car</StyledTableCell>
-              <StyledTableCell>Points</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 20 }}>Place</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 20 }}>Car #</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 5 }}>Name</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 5 }}>Car</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 20 }}>Points</StyledTableCell>
               {data?.season.map((r: string) => {
                 return (
-                  <StyledTableCell data-tip data-for={`${r}tip`} key={r} sx={{ backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundImage: `url(/flags/4x3/${flagsMap[r]}.svg)` }}>
+                  <StyledTableCell
+                    data-tip
+                    data-for={`${r}tip`}
+                    key={r}
+                    sx={{
+                      width: 1 / 30, backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundImage: `url(/flags/4x3/${flagsMap[r]}.svg)`,
+                    }}
+                  >
                     <ReactTooltip className="tooltip" id={`${r}tip`} place="top" effect="solid">
                       {parseTrackName(r)}
                     </ReactTooltip>
