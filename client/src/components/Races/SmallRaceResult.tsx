@@ -1,19 +1,22 @@
 import React from "react";
 import {
-  Paper, ToggleButton, Typography, Card, Box, useMediaQuery,
+  Paper, ToggleButton, Typography, Box, useMediaQuery,
 } from "@mui/material";
-import { RaceSubcomponentsProps } from "../types";
+import { RaceResultsEntry, RaceSubcomponentsProps } from "../types";
 import { parseTrackName } from "../helpers";
+import ClassRaceResult from "./ClassRaceResult";
 
 function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   const handleClick = () => {
     opened ? setOpened(false) : setOpened(true);
   };
 
-  const placeMap: {[index:number]: string} = {
-    0: "\u{1F3C6}",
-    1: "\u{1F3C5}",
-    2: "\u{1F949}",
+  const classes: {
+    [index: string]: RaceResultsEntry[]
+  } = {
+    Pro: race.results.pro,
+    Silver: race.results.silver,
+    Am: race.results.am,
   };
 
   const mobile = useMediaQuery("(max-width:600px)");
@@ -22,7 +25,7 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
     <Paper
       variant="outlined"
       sx={{
-        display: "flex", flexDirection: "column", alignItems: "center", width: 1, mb: 5,
+        display: "flex", flexDirection: "column", alignItems: "center", width: 1, mb: 5, paddingY: 1,
       }}
     >
       <ToggleButton value="detailed-results" onClick={handleClick} selected={opened}>Detailed results</ToggleButton>
@@ -31,67 +34,13 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
         Track:&nbsp;
         {parseTrackName(race.track)}
       </Typography>
-      <Box sx={{ display: "flex", flexDirection: `${mobile && "column"}`, width: `${mobile ? 1 / 2 : 1}` }}>
-        <Card
-          variant="outlined"
-          sx={{
-            margin: `${mobile ? ".25rem 0" : "0 1rem"}`, width: `${mobile ? 1 : 1 / 3}`, pb: 2, paddingX: 2,
-          }}
-        >
-          <h4>Pro:</h4>
-          {race.results.pro.slice(0, 3).map((driver, index) => {
-            return (
-              <div key={driver.driver.playerID}>
-                {placeMap[index]}
-                &nbsp;
-                {driver.driver.firstName}
-                &nbsp;
-                {driver.driver.lastName}
-                <br />
-              </div>
-            );
-          })}
-        </Card>
-        <Card
-          variant="outlined"
-          sx={{
-            margin: `${mobile ? ".25rem 0" : "0 1rem"}`, width: `${mobile ? 1 : 1 / 3}`, pb: 2, paddingX: 2,
-          }}
-        >
-          <h4>Silver:</h4>
-          {race.results.silver.slice(0, 3).map((driver, index) => {
-            return (
-              <div key={driver.driver.playerID}>
-                {placeMap[index]}
-                &nbsp;
-                {driver.driver.firstName}
-                &nbsp;
-                {driver.driver.lastName}
-                <br />
-              </div>
-            );
-          })}
-        </Card>
-        <Card
-          variant="outlined"
-          sx={{
-            margin: `${mobile ? ".25rem 0" : "0 1rem"}`, width: `${mobile ? 1 : 1 / 3}`, pb: 2, paddingX: 2,
-          }}
-        >
-          <h4>AM:</h4>
-          {race.results.am.slice(0, 3).map((driver, index) => {
-            return (
-              <div key={driver.driver.playerID}>
-                {placeMap[index]}
-                &nbsp;
-                {driver.driver.firstName}
-                &nbsp;
-                {driver.driver.lastName}
-                <br />
-              </div>
-            );
-          })}
-        </Card>
+      <Box sx={{
+        display: "flex", flexDirection: `${mobile && "column"}`, width: `${mobile ? 1 / 2 : 1}`,
+      }}
+      >
+        {Object.keys(classes).map((c) => {
+          return <ClassRaceResult result={classes[c]} c={c} />;
+        })}
       </Box>
     </Paper>
   );
