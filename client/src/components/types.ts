@@ -112,8 +112,8 @@ export interface RaceSubcomponentsProps {
 }
 
 export interface DropRoundToggleProps {
-  showDropRound: boolean,
-  handleDropRoundClick:() => void
+  showDropRound: boolean;
+  setShowDropRound: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ClassSelectorProps {

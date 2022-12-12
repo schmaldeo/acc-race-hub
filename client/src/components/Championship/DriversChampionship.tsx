@@ -22,10 +22,6 @@ function DriversChampionship() {
   const [showDropRound, setShowDropRound] = useState(true);
   const [classToDisplay, setClassToDisplay] = useState(0);
 
-  const handleDropRoundClick = () => {
-    showDropRound ? setShowDropRound(false) : setShowDropRound(true);
-  };
-
   const { isLoading, error, data } = useQuery<ChampionshipData, Error>("champData", () => fetch(`${process.env.REACT_APP_BACKEND_URL}/champ`).then((res) => res.json()));
 
   if (isLoading) return <FidgetSpinner backgroundColor="#7b089e" ballColors={["#b505af", "#116599", "#969406"]} width={180} height={180} />;
@@ -80,7 +76,7 @@ function DriversChampionship() {
   return (
     <>
       <ClassSelector classToDisplay={classToDisplay} setClassToDisplay={setClassToDisplay} />
-      <DropRoundToggle handleDropRoundClick={handleDropRoundClick} showDropRound={showDropRound} />
+      <DropRoundToggle showDropRound={showDropRound} setShowDropRound={setShowDropRound} />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
