@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs, Tab } from "@mui/material";
-import { ClassSelectorProps } from "../types";
+import { ClassSelectorProps } from "./types";
 
 function ClassSelector({ classToDisplay, setClassToDisplay }: ClassSelectorProps) {
   const handleClassChange = (event: React.SyntheticEvent, newValue: number) => {

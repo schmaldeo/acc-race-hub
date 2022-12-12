@@ -11,7 +11,7 @@ import DropRoundToggle from "./DropRoundToggle";
 import { TeamsChampionshipData, Team } from "../types";
 import StyledTableCell from "../StyledComponents/StyledTableCell";
 import StyledTableRow from "../StyledComponents/StyledTableRow";
-import ClassSelector from "./ClassSelector";
+import ClassSelector from "../ClassSelector";
 
 function TeamsChampionship() {
   const [showDropRound, setShowDropRound] = useState(true);

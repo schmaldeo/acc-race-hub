@@ -14,7 +14,7 @@ import { ClassEntry, ChampionshipData } from "../types";
 import { parseTrackName } from "../helpers";
 import _flagsMap from "../flagsMap.json";
 import DropRoundToggle from "./DropRoundToggle";
-import ClassSelector from "./ClassSelector";
+import ClassSelector from "../ClassSelector";
 
 const flagsMap: { [country: string]: string } = _flagsMap;
 
