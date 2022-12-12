@@ -12,8 +12,8 @@ function App() {
   return (
     <Routes>
       <Route path="/*" element={<NavBar />}>
-        <Route path="races" element={<Races />} />
         <Route index element={<Championship />} />
+        <Route path="races" element={<Races />} />
         <Route path="classqualifying" element={<ClassQuali />} />
       </Route>
     </Routes>
