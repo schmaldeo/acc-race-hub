@@ -59,6 +59,7 @@ function NavBar() {
               src="./banner.png"
               height="4rem"
               width="auto"
+              alt="ACC Race Hub"
             />
           </Box>
           <Box sx={{ display: "hidden", mr: 5 }} />

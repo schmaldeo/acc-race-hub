@@ -93,7 +93,7 @@ function DriversChampionship() {
                     data-for={`${r}tip`}
                     key={r}
                     sx={{
-                      width: 1 / 30, backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundImage: `url(/flags/4x3/${flagsMap[r]}.svg)`,
+                      width: 1 / 30, backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundImage: `url(${process.env.PUBLIC_URL}/flags/4x3/${flagsMap[r]}.svg)`,
                     }}
                   >
                     <ReactTooltip className="tooltip" id={`${r}tip`} place="top" effect="solid">
