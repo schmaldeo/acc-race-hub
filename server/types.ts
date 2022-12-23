@@ -159,9 +159,21 @@ export interface DriverInRaceResults {
   totalTime: number;
 }
 
+export interface QualifyingInRaceResults {
+  driver: DriverInEntrylist;
+  number: number;
+  car: string;
+  bestLap: number;
+  lapCount: number;
+  laps: number[];
+}
+
 export interface ParsedRaceResults {
   race: string;
   track: string;
+  qualifyingResults: {
+    [c: string]: QualifyingInRaceResults[]
+  }
   results: {
     [c: string]: DriverInRaceResults[]
   };

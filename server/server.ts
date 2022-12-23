@@ -13,6 +13,7 @@ import {
   Manufacturer,
   DriverInRaceResults,
   ParsedRaceResults,
+  QualifyingInRaceResults,
 } from "./types";
 
 dotenv.config();
@@ -178,6 +179,13 @@ const server = () => {
         } = {
           pro: [], silver: [], am: [],
         };
+        const qualiLb : {
+          pro: QualifyingInRaceResults[];
+          silver: QualifyingInRaceResults[];
+          am: QualifyingInRaceResults[]
+        } = {
+          pro: [], silver: [], am: [],
+        };
 
         // This is required due to how ACC indexes its classes
         const classes: {
@@ -188,23 +196,44 @@ const server = () => {
           3: lb.pro,
         };
 
-        Object.values(race.results).forEach((c) => {
-          const driverDetails = entrylist.find((e) => e && e.drivers[0].playerID === c.playerId);
-          if (driverDetails) {
-            classes[driverDetails.drivers[0].driverCategory]
-              .push({
-                driver: driverDetails.drivers[0],
-                number: driverDetails.raceNumber,
-                car: carsMap[driverDetails.forcedCarModel],
-                bestLap: c.bestLap,
-                lapCount: c.lapCount,
-                totalTime: c.totalTime,
-              });
-          }
+        const qClasses: {
+          [index: number]: QualifyingInRaceResults[]
+        } = {
+          0: qualiLb.am,
+          1: qualiLb.silver,
+          3: qualiLb.pro,
+        };
+
+        Object.values(race.results).forEach((driver) => {
+          const driverDetails = entrylist.find((e) => e && e.drivers[0].playerID === driver.playerId);
+          driverDetails && classes[driverDetails.drivers[0].driverCategory]
+            .push({
+              driver: driverDetails.drivers[0],
+              number: driverDetails.raceNumber,
+              car: carsMap[driverDetails.forcedCarModel],
+              bestLap: driver.bestLap,
+              lapCount: driver.lapCount,
+              totalTime: driver.totalTime,
+            });
         });
+
+        Object.values(race.qualifyingResults).forEach((driver) => {
+          const driverDetails = entrylist.find((e) => e && e.drivers[0].playerID === driver.playerId);
+          driverDetails && qClasses[driverDetails.drivers[0].driverCategory]
+            .push({
+              driver: driverDetails.drivers[0],
+              number: driverDetails.raceNumber,
+              car: carsMap[driverDetails.forcedCarModel],
+              bestLap: driver.bestLap,
+              lapCount: driver.lapCount,
+              laps: driver.laps,
+            });
+        });
+
         parsedResults.push({
           race: race.race,
           track: race.track,
+          qualifyingResults: qualiLb,
           results: lb,
         });
       });
