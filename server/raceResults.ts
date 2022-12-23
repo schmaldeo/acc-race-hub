@@ -2,6 +2,7 @@ import fs from "fs";
 import chokidar from "chokidar";
 import { MongoClient } from "mongodb";
 import { flatten, $set, $inc } from "mongo-dot-notation";
+import yn from "yn";
 import _pointsMap from "./pointsMap.json" assert { type: "json" };
 import _carsMap from "./carsMap.json" assert { type: "json" };
 import manufacturersChamp from "./manufacturersChamp.js";
@@ -191,7 +192,7 @@ const raceResults = () => {
         });
       }
     });
-    setTimeout(() => teamsChamp(), 2000);
+    yn(process.env.CALCULATE_TEAMS_POINTS) && setTimeout(() => teamsChamp(), 2000);
   });
 };
 
