@@ -7,7 +7,7 @@ const classQuali = () => {
   const uri = process.env.MONGO_URI;
   if (!uri) throw new Error("No Mongo URI provided");
   const client = new MongoClient(uri);
-  const db = client.db(process.env.MONGO_DB_NAME);
+  const db = client.db(process.env.MONGO_DB_NAME || "acc_race_hub");
   const collection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME || "class_qualifying");
 
   const leaderboard: Leaderboard[] = [];

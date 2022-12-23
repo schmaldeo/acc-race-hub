@@ -23,7 +23,7 @@ const carsMap: {[index: number]: string} = _carsMap;
 const uri = process.env.MONGO_URI;
 if (!uri) throw new Error("Mongo URI not specified");
 const client = new MongoClient(uri);
-const db = client.db(process.env.MONGO_DB_NAME);
+const db = client.db(process.env.MONGO_DB_NAME || "acc_race_hub");
 const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME || "entrylist");
 const raceCollection = db.collection<Races>(process.env.MONGO_RACE_COLLECTION_NAME || "race_results");
 const standingsCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME || "drivers_standings");

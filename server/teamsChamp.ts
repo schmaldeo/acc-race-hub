@@ -7,7 +7,7 @@ dotenv.config();
 const uri = process.env.MONGO_URI;
 if (!uri) throw new Error("URI not specified");
 const client = new MongoClient(uri);
-const db = client.db(process.env.MONGO_DB_NAME);
+const db = client.db(process.env.MONGO_DB_NAME || "acc_race_hub");
 
 export default async function teamsChamp() {
   const teamsCollection = db.collection(process.env.MONGO_TEAMS_COLLECTION_NAME || "teams");
