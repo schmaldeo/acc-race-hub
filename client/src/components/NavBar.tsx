@@ -25,7 +25,7 @@ const Main = styled("div")(({ theme }) => ({
 
 const drawerWidth = 250;
 
-function NavBar() {
+function NavBar({componentsToShow}: {componentsToShow: number}) {
   const [blackTheme, setBlackTheme] = useState(false);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -39,6 +39,7 @@ function NavBar() {
   const navigate = useNavigate();
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
+
 
   return (
     <>
@@ -84,14 +85,16 @@ function NavBar() {
         </DrawerHeader>
         <Divider />
         <List>
+          {componentsToShow % 2 === 1 &&
           <ListItem>
-            <ListItemButton onClick={() => { navigate("/"); handleDrawerClose(); }}>
+            <ListItemButton onClick={() => { navigate("/championship"); handleDrawerClose(); }}>
               <ListItemIcon>
                 <EmojiEvents />
               </ListItemIcon>
               <ListItemText primary="Championship" />
             </ListItemButton>
-          </ListItem>
+          </ListItem>}
+          {(componentsToShow % 3 === 0 || componentsToShow === 7 || componentsToShow === 2) &&
           <ListItem>
             <ListItemButton onClick={() => { navigate("/races"); handleDrawerClose(); }}>
               <ListItemIcon>
@@ -99,7 +102,8 @@ function NavBar() {
               </ListItemIcon>
               <ListItemText primary="Races" />
             </ListItemButton>
-          </ListItem>
+          </ListItem>}
+          {componentsToShow >= 4 &&
           <ListItem>
             <ListItemButton onClick={() => { navigate("/classqualifying"); handleDrawerClose(); }}>
               <ListItemIcon>
@@ -107,7 +111,7 @@ function NavBar() {
               </ListItemIcon>
               <ListItemText primary="Class qualifying" />
             </ListItemButton>
-          </ListItem>
+          </ListItem>}
           <Divider />
           <ListItem>
             <ListItemButton onClick={handleClick}>

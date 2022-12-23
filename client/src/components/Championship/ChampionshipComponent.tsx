@@ -5,8 +5,20 @@ import DriversChampionship from "./DriversChampionship";
 import TeamsChampionship from "./TeamsChampionship";
 
 function Championship() {
-  const [championshipToShow, setChampionshipToShow] = useState("drivers");
+  const champsToShow: number = parseInt(process.env.REACT_APP_CHAMPS_TO_SHOW || "7");
+  const defaultChamp = (toShow: number): string => {
+    if (toShow % 2 === 1) {
+      return "drivers"
+    } else if (toShow === 4) {
+      return "constructors"
+    } else {
+      return "teams"
+    };
+  };
+  
+  const [championshipToShow, setChampionshipToShow] = useState(defaultChamp(champsToShow));
   const [tabSelected, setTabSelected] = useState(0);
+
 
   const handleClick = (c: string) => {
     switch (c) {
@@ -31,9 +43,9 @@ function Championship() {
   return (
     <>
       <Tabs value={tabSelected} onChange={handleChange} centered>
-        <Tab label="Drivers" onClick={() => handleClick("drivers")} />
-        <Tab label="Teams" onClick={() => handleClick("teams")} />
-        <Tab label="Constructors" onClick={() => handleClick("constructors")} />
+        {champsToShow % 2 === 1 && <Tab label="Drivers" onClick={() => handleClick("drivers")} />}
+        {(champsToShow % 3 === 0 || champsToShow === 7 || champsToShow === 2) && <Tab label="Teams" onClick={() => handleClick("teams")} />}
+        {champsToShow >= 4 && <Tab label="Constructors" onClick={() => handleClick("constructors")} />}
       </Tabs>
 
       {championshipToShow === "drivers" && <DriversChampionship />}
