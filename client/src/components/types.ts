@@ -94,9 +94,23 @@ export interface RaceResultsEntry {
   totalTime: number
 }
 
+export interface QualifyingInRaceResults {
+  driver: Driver;
+  number: number;
+  car: string;
+  bestLap: number;
+  lapCount: number;
+  laps: number[];
+}
+
 export interface Race {
   race: string,
   track: string,
+  qualifyingResults: {
+    pro: QualifyingInRaceResults[],
+    silver: QualifyingInRaceResults[],
+    am: QualifyingInRaceResults[],
+  }
   results: {
     pro: RaceResultsEntry[],
     silver: RaceResultsEntry[],

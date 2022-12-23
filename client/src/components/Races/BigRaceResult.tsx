@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Paper, ToggleButton, Typography, Box,
+  Tabs, Tab,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,11 +11,16 @@ import TableRow from "@mui/material/TableRow";
 import StyledTableCell from "../StyledComponents/StyledTableCell";
 import StyledTableRow from "../StyledComponents/StyledTableRow";
 import ClassSelector from "../ClassSelector";
-import { RaceResultsEntry, RaceSubcomponentsProps } from "../types";
+
+import { QualifyingInRaceResults, RaceResultsEntry, RaceSubcomponentsProps } from "../types";
 import { msToLaptime, parseTotalRaceTime, parseTrackName } from "../helpers";
 
 function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   const [classToDisplay, setClassToDisplay] = useState(0);
+  const [sessionToDisplay, setSessionToDisplay] = useState(1);
+  const handleSessionChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSessionToDisplay(newValue);
+  };
 
   const handleClick = () => {
     opened ? setOpened(false) : setOpened(true);
@@ -24,6 +30,12 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
     race.results.pro,
     race.results.silver,
     race.results.am,
+  ];
+
+  const qClasses: Array<QualifyingInRaceResults[]> = [
+    race.qualifyingResults.pro,
+    race.qualifyingResults.silver,
+    race.qualifyingResults.am,
   ];
 
   const fastestLap = classes[classToDisplay]
@@ -56,6 +68,22 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
     );
   });
 
+  const qualifyingResult = qClasses[classToDisplay]?.map((driver, index) => {
+    return (
+      <StyledTableRow key={driver.driver.playerID}>
+        <StyledTableCell>{index + 1}</StyledTableCell>
+        <StyledTableCell>{driver.number}</StyledTableCell>
+        <StyledTableCell>{`${driver.driver.firstName} ${driver.driver.lastName}`}</StyledTableCell>
+        <StyledTableCell>{driver.car}</StyledTableCell>
+        <StyledTableCell>{msToLaptime(driver.bestLap)}</StyledTableCell>
+        <StyledTableCell>{driver.lapCount}</StyledTableCell>
+        <StyledTableCell>{(driver.laps).length}</StyledTableCell>
+      </StyledTableRow>
+    );
+  });
+
+  const results = [qualifyingResult, raceResult];
+
   return (
     <Paper variant="outlined" sx={{ width: 1, mb: 5, paddingY: 1 }}>
       {/* TODO make a component to display race info in these */}
@@ -65,6 +93,10 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
         Track:&nbsp;
         {parseTrackName(race.track)}
       </Typography>
+      <Tabs value={sessionToDisplay} onChange={handleSessionChange} centered>
+        <Tab label="Qualifying" />
+        <Tab label="Race" />
+      </Tabs>
       <ClassSelector classToDisplay={classToDisplay} setClassToDisplay={setClassToDisplay} />
       <TableContainer component={Box} sx={{ padding: 2 }}>
         <Table>
@@ -75,11 +107,16 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
               <StyledTableCell sx={{ width: 1 / 4 }}>Name</StyledTableCell>
               <StyledTableCell sx={{ width: 1 / 5 }}>Car</StyledTableCell>
               <StyledTableCell sx={{ width: 1 / 8 }}>Best lap</StyledTableCell>
-              <StyledTableCell sx={{ width: 1 / 8 }}>Gap</StyledTableCell>
+              <StyledTableCell sx={{ width: 1 / 8 }}>{sessionToDisplay === 1 ? "Gap" : "Laps"}</StyledTableCell>
+              {sessionToDisplay === 0 && (
+              <StyledTableCell sx={{ width: 1 / 8 }}>
+                Valid laps
+              </StyledTableCell>
+              ) }
             </TableRow>
           </TableHead>
           <TableBody>
-            {raceResult}
+            {results[sessionToDisplay]}
           </TableBody>
         </Table>
       </TableContainer>
