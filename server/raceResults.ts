@@ -14,6 +14,7 @@ import {
   EntrylistEntry,
   ClassesGroupped,
   ChampionshipEntry,
+  Races,
 } from "./types";
 
 const carsMap: {[index: string]: string} = _carsMap;
@@ -24,7 +25,7 @@ const raceResults = () => {
   const uri = process.env.MONGO_URI;
   const client = new MongoClient(uri);
   const db = client.db(process.env.MONGO_DB_NAME || "acc_race_hub");
-  const raceCollection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME || "race_results");
+  const raceCollection = db.collection<Races>(process.env.MONGO_RACE_COLLECTION_NAME || "race_results");
   const champCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME || "drivers_standings");
   const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME || "entrylist");
   const manufacturersCollection = db.collection(process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME || "manufacturers_standings");
@@ -35,14 +36,14 @@ const raceResults = () => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
     // therefore need to pass the argument for JSON.parse() to work correctly
     fs.readFile(`${file}`, "utf8", async (err, data) => {
-      const json = JSON.parse(data.toString());
+      const dataParsed = JSON.parse(data.toString());
 
       // make sure it only processes race dumps
-      if (json.sessionType === "R") {
+      if (dataParsed.sessionType === "R") {
         const leaderboard: ParsedLeaderboardEntry[] = [];
         const lbForManufacturers: ManufacturersElement[] = [];
-        const laps = json.sessionResult.leaderBoardLines[0].timing.lapCount;
-        json.sessionResult.leaderBoardLines.forEach((entry: LeaderboardLines, index: number) => {
+        const laps = dataParsed.sessionResult.leaderBoardLines[0].timing.lapCount;
+        dataParsed.sessionResult.leaderBoardLines.forEach((entry: LeaderboardLines, index: number) => {
           leaderboard.push(
             {
               playerId: entry.car.drivers[0].playerId,
@@ -59,11 +60,19 @@ const raceResults = () => {
 
         const manufacturersStandings = manufacturersChamp(lbForManufacturers);
 
-        raceCollection.insertOne({
-          race: json.serverName,
-          track: json.trackName,
-          results: leaderboard,
-        });
+        const existingRaceEntry = await raceCollection.findOne({ race: dataParsed.serverName });
+        if (existingRaceEntry) {
+          raceCollection.updateOne(existingRaceEntry, flatten({
+            results: $set(leaderboard),
+          }));
+        } else {
+          raceCollection.insertOne({
+            race: dataParsed.serverName,
+            track: dataParsed.trackName,
+            qualifyingResults: [],
+            results: leaderboard,
+          });
+        }
 
         Object.keys(manufacturersStandings).forEach(async (manufacturer) => {
           const manufacturersFetched = await manufacturersCollection.find().toArray();
@@ -143,7 +152,7 @@ const raceResults = () => {
                   playerId: driver.playerId,
                   points: pointsToAward,
                   pointsWDrop: pointsToAward,
-                  finishes: { [json.trackName]: [dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward] },
+                  finishes: { [dataParsed.trackName]: [dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward] },
                 });
               } else {
                 const existingPoints = [];
@@ -158,7 +167,7 @@ const raceResults = () => {
                   points: $inc(pointsToAward),
                   pointsWDrop: dropPoints,
                   roundDropped: toDrop,
-                  [`finishes.${json.trackName}`]: $set([dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward]),
+                  [`finishes.${dataParsed.trackName}`]: $set([dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward]),
                 };
                 champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
               }
@@ -168,7 +177,7 @@ const raceResults = () => {
                   playerId: driver.playerId,
                   points: 0,
                   pointsWDrop: 0,
-                  finishes: { [json.trackName]: ["DNS", false, 0] },
+                  finishes: { [dataParsed.trackName]: ["DNS", false, 0] },
                 });
               } else {
                 const existingPoints = [];
@@ -183,7 +192,7 @@ const raceResults = () => {
                 const updated = {
                   pointsWDrop: dropPoints,
                   roundDropped: toDrop,
-                  [`finishes.${json.trackName}`]: $set(["DNS", false, 0]),
+                  [`finishes.${dataParsed.trackName}`]: $set(["DNS", false, 0]),
                 };
                 champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
               }

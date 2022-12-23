@@ -84,8 +84,12 @@ export interface Leaderboard {
   name: string;
   playerId: string;
   bestLap: number;
-  laps: number[],
+  laps: number[];
   amountOfValidLaps?: number;
+}
+
+export interface QualifyingResults extends Omit<Leaderboard, "name"> {
+  lapCount: number;
 }
 
 export interface Lap {
@@ -118,9 +122,10 @@ export interface ServerChampionshipRes {
 }
 
 export interface Races {
-  _id: string;
+  _id?: string;
   race: string;
   track: string;
+  qualifyingResults: QualifyingResults[];
   results: ParsedLeaderboardEntry[];
 }
 
