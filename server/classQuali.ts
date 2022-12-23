@@ -8,13 +8,12 @@ const classQuali = () => {
   if (!uri) throw new Error("No Mongo URI provided");
   const client = new MongoClient(uri);
   const db = client.db(process.env.MONGO_DB_NAME);
-  if (!process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME) throw new Error("No collection name provided");
-  const collection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME);
+  const collection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME || "class_qualifying");
 
   const leaderboard: Leaderboard[] = [];
 
   const resultsFolder = process.env.RESULTS_FOLDER;
-  if (!resultsFolder) throw new Error("no result folder provided");
+  if (!resultsFolder) throw new Error("No results folder provided in .env");
   chokidar.watch(resultsFolder, { ignoreInitial: true }).on("add", async (file) => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
     // therefore need to pass the argument for JSON.parse() to work correctly

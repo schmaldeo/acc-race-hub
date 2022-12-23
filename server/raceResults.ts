@@ -23,17 +23,14 @@ const raceResults = () => {
   const uri = process.env.MONGO_URI;
   const client = new MongoClient(uri);
   const db = client.db(process.env.MONGO_DB_NAME);
-  if (!process.env.MONGO_RACE_COLLECTION_NAME
-    || !process.env.MONGO_STANDINGS_COLLECTION_NAME
-    || !process.env.MONGO_ENTRYLIST_COLLECTION_NAME
-    || !process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME
-  ) throw new Error("Required environment variables not specified (collection names)");
-  const raceCollection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME);
-  const champCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME);
-  const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME);
-  const manufacturersCollection = db.collection(process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME);
+  const raceCollection = db.collection(process.env.MONGO_RACE_COLLECTION_NAME || "race_results");
+  const champCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME || "drivers_standings");
+  const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME || "entrylist");
+  const manufacturersCollection = db.collection(process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME || "manufacturers_standings");
 
-  chokidar.watch(process.env.RESULTS_FOLDER || "results", { ignoreInitial: true }).on("add", (file) => {
+  const resultsFolder = process.env.RESULTS_FOLDER;
+  if (!resultsFolder) throw new Error("No results folder provided in .env");
+  chokidar.watch(resultsFolder, { ignoreInitial: true }).on("add", (file) => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
     // therefore need to pass the argument for JSON.parse() to work correctly
     fs.readFile(`${file}`, "utf8", async (err, data) => {

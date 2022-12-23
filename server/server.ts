@@ -22,18 +22,13 @@ const carsMap: {[index: number]: string} = _carsMap;
 
 const uri = process.env.MONGO_URI;
 if (!uri) throw new Error("Mongo URI not specified");
-if (!process.env.MONGO_ENTRYLIST_COLLECTION_NAME
-  || !process.env.MONGO_RACE_COLLECTION_NAME
-  || !process.env.MONGO_STANDINGS_COLLECTION_NAME
-  || !process.env.MONGO_MANUFACTURERS_STANDINGS_COLLECTION_NAME
-  || !process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME) throw new Error("Required environment variables not specified (collection names)");
 const client = new MongoClient(uri);
 const db = client.db(process.env.MONGO_DB_NAME);
-const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME);
-const raceCollection = db.collection<Races>(process.env.MONGO_RACE_COLLECTION_NAME);
-const standingsCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME);
-const manufacturersStandings = db.collection<Manufacturer>(process.env.MONGO_MANUFACTURERS_STANDINGS_COLLECTION_NAME);
-const classQualifyingCollection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME);
+const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME || "entrylist");
+const raceCollection = db.collection<Races>(process.env.MONGO_RACE_COLLECTION_NAME || "race_results");
+const standingsCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME || "drivers_standings");
+const manufacturersStandings = db.collection<Manufacturer>(process.env.MONGO_MANUFACTURERS_STANDINGS_COLLECTION_NAME || "manufacturers_standings");
+const classQualifyingCollection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME || "class_qualifying");
 const port = process.env.PORT || 4001;
 
 const server = () => {
