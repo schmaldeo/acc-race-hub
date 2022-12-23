@@ -1,14 +1,12 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
 import entrylist from "./entrylist.json" assert { type: "json" };
 
 dotenv.config();
 
+if (!process.env.MONGO_URI) throw new Error("Mongo URI not specified");
 const uri = process.env.MONGO_URI;
-const client = new MongoClient(
-  uri,
-  { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 },
-);
+const client = new MongoClient(uri);
 
 (async () => {
   await client.connect();
