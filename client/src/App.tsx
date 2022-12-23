@@ -9,7 +9,7 @@ import ClassQuali from "./components/ClassQualifying/ClassQuali";
 import Races from "./components/Races/Races";
 
 function App() {
-  const componentsToShow: number = parseInt(process.env.REACT_APP_COMPONENTS_TO_SHOW_IN_MENU || "7", 10);
+  const componentsToShow: number = parseInt(process.env.REACT_APP_COMPONENTS_TO_SHOW_IN_MENU || "5", 10);
   const specifyIndexElement = (toShow: number): ReactNode => {
     if (toShow % 2 === 1) {
       return <Championship />;
@@ -23,9 +23,9 @@ function App() {
     <Routes>
       <Route path="/*" element={<NavBar componentsToShow={componentsToShow} />}>
         <Route index element={specifyIndexElement(componentsToShow)} />
-        <Route path="championship" element={<Championship />} />
-        <Route path="races" element={<Races />} />
-        <Route path="classqualifying" element={<ClassQuali />} />
+        {componentsToShow % 2 === 1 && <Route path="championship" element={<Championship />} />}
+        {(componentsToShow % 3 === 0 || componentsToShow === 7 || componentsToShow === 2) && <Route path="races" element={<Races />} />}
+        {componentsToShow >= 4 && <Route path="classqualifying" element={<ClassQuali />} />}
       </Route>
     </Routes>
   );
