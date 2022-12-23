@@ -33,8 +33,8 @@ It's using [React](https://reactjs.org/) as a front-end framework, [MUI](https:/
 ## Deployment
 1. Run `git clone https://github.com/schmatteo/acc_race_hub.git & cd acc-race-hub/server` or [download the ZIP](https://github.com/schmatteo/acc-race-hub/archive/refs/heads/master.zip) and open the terminal in `server` directory
 2. Run `npm install`
-3. Fill the required environment variables in the `.env` file out
-4. Run `node createDB.js`
+3. Fill the required environment variables in the `.env` file out (if you need help with deploying MongoDB you can read [this doc]())
+4. Run `node ./createDB.js`
 5. Run `npx tsc`
 6. Comment/uncomment features that you want to use in the `index.js` file (add `//` at the beginning of the line to comment)
 7. To run the app: `node --experimental-json-modules .`
