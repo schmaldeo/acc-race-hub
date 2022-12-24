@@ -11,8 +11,8 @@ const client = new MongoClient(uri);
 (async () => {
   await client.connect();
   const db = client.db(process.env.MONGO_DB_NAME || "acc_race_hub");
-  const collection = db.collection("teams");
-  const entrylist = await db.collection("entrylist").find().toArray();
+  const collection = db.collection(process.env.MONGO_TEAMS_COLLECTION_NAME || "teams");
+  const entrylist = await db.collection(process.env.MONGO_ENTRYLIST_COLLECTION_NAME || "entrylist").find().toArray();
   Object.keys(teams).forEach((team) => {
     const classes = {
       0: 1,
