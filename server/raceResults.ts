@@ -35,7 +35,7 @@ const raceResults = () => {
   chokidar.watch(resultsFolder, { ignoreInitial: true }).on("add", (file) => {
     // Reading the JSON file output by the server. It's encoded in UTF-16 LE,
     // therefore need to pass the argument for JSON.parse() to work correctly
-    fs.readFile(`${file}`, "utf8", async (err, data) => {
+    fs.readFile(`${file}`, "utf16le", async (err, data) => {
       const dataParsed = JSON.parse(data.toString());
 
       // make sure it only processes race dumps

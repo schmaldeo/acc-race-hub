@@ -20,7 +20,7 @@ const qualifyingResults = () => {
   if (!resultsFolder) throw new Error("No results folder provided in .env");
 
   chokidar.watch(resultsFolder, { ignoreInitial: true }).on("add", (file) => {
-    fs.readFile(file, "utf8", async (err, data) => {
+    fs.readFile(file, "utf16le", async (err, data) => {
       const dataParsed = JSON.parse(data.toString());
 
       const leaderboard: QualifyingResults[] = [];
