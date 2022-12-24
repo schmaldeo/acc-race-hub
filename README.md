@@ -37,6 +37,7 @@ It's using [React](https://reactjs.org/) as a front-end framework, [MUI](https:/
 2. Fill the required environment variables in the `.env` file out (if you need help with deploying MongoDB you can read [this doc](https://github.com/schmatteo/acc-race-hub/blob/master/docs/mongodb.md))
 1. Run `node ./createDB.js`
 1. [Insert the entrylist into the database using `insertEntrylist.js`](https://github.com/schmatteo/acc-race-hub/blob/master/docs/entrylist.md)
+1. [Insert a season into the database using `insertSeasons.js`](https://github.com/schmatteo/acc-race-hub/blob/master/docs/seasons.md)
 1. OPTIONAL: [Insert teams into the database](https://github.com/schmatteo/acc-race-hub/blob/master/docs/teams.md)
 1. Run `npx tsc`
 1. Comment/uncomment features that you want to use in the `index.js` file (add `//` at the beginning of the line to comment)
