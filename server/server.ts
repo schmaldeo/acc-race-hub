@@ -28,7 +28,7 @@ const db = client.db(process.env.MONGO_DB_NAME || "acc_race_hub");
 const entrylistCollection = db.collection<EntrylistEntry>(process.env.MONGO_ENTRYLIST_COLLECTION_NAME || "entrylist");
 const raceCollection = db.collection<Races>(process.env.MONGO_RACE_COLLECTION_NAME || "race_results");
 const standingsCollection = db.collection<ChampionshipEntry>(process.env.MONGO_STANDINGS_COLLECTION_NAME || "drivers_standings");
-const manufacturersStandings = db.collection<Manufacturer>(process.env.MONGO_MANUFACTURERS_STANDINGS_COLLECTION_NAME || "manufacturers_standings");
+const manufacturersStandings = db.collection<Manufacturer>(process.env.MONGO_CONSTRUCTORS_COLLECTION_NAME || "manufacturers_standings");
 const classQualifyingCollection = db.collection(process.env.MONGO_CLASS_QUALIFYING_COLLECTION_NAME || "class_qualifying");
 const port = process.env.PORT || 4001;
 
