@@ -19,7 +19,7 @@ function ClassQuali() {
 
   if (error) return <div>{error.message}</div>;
 
-  // TODO add sorting by best lap
+  // TODO add sorting by best lap as an alternative to sorting by amount of laps
   data?.sort((a, b) => b.laps.length - a.laps.length);
 
   return (
