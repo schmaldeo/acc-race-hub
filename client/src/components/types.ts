@@ -133,3 +133,7 @@ export interface ClassSelectorProps {
   classToDisplay: number;
   setClassToDisplay: Dispatch<SetStateAction<number>>
 }
+
+export interface AdminLoginProps {
+  setAuthenticated: Dispatch<SetStateAction<boolean>>
+}
