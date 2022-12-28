@@ -133,3 +133,13 @@ export interface ClassSelectorProps {
   classToDisplay: number;
   setClassToDisplay: Dispatch<SetStateAction<number>>
 }
+
+export interface AdminLoginProps {
+  setAuthenticated: Dispatch<SetStateAction<boolean>>
+}
+
+export interface NavBarProps {
+  componentsToShow: number;
+  toggleDarkMode: () => void;
+  isDarkMode: boolean;
+}

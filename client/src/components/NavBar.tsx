@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Brightness3Icon from "@mui/icons-material/Brightness3";
 import LightMode from "@mui/icons-material/LightMode";
@@ -15,8 +15,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Image from "mui-image";
+import { useOnClickOutside } from "usehooks-ts";
 import AppBar from "./StyledComponents/AppBar";
 import DrawerHeader from "./StyledComponents/DrawerHeader";
+import { NavBarProps } from "./types";
 
 const Main = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
@@ -25,24 +27,20 @@ const Main = styled("div")(({ theme }) => ({
 
 const drawerWidth = 250;
 
-function NavBar({ componentsToShow }: {componentsToShow: number}) {
-  const [blackTheme, setBlackTheme] = useState(false);
+function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
+  const menuRef = useRef(null);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
-  const handleClick = () => {
-    if (blackTheme) {
-      setBlackTheme(false);
-    } else {
-      setBlackTheme(true);
-    }
-  };
   const navigate = useNavigate();
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
+  const handleClickOutside = () => setOpen(false);
+
+  useOnClickOutside(menuRef, handleClickOutside);
 
   return (
     <>
-      <AppBar position="sticky" open={open}>
+      <AppBar position="sticky" open={open} ref={menuRef}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
@@ -119,12 +117,11 @@ function NavBar({ componentsToShow }: {componentsToShow: number}) {
           )}
           <Divider />
           <ListItem>
-            <ListItemButton onClick={handleClick}>
+            <ListItemButton onClick={toggleDarkMode}>
               <ListItemIcon>
-                {blackTheme ? <Brightness3Icon /> : <LightMode />}
+                {isDarkMode ? <Brightness3Icon /> : <LightMode />}
               </ListItemIcon>
-              {/* TODO handle dark mode */}
-              <ListItemText primary={blackTheme ? "Dark mode" : "Light mode"} />
+              <ListItemText primary={isDarkMode ? "Dark mode" : "Light mode"} />
             </ListItemButton>
           </ListItem>
         </List>
