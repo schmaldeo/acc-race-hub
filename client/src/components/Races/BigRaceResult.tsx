@@ -86,7 +86,6 @@ function BigRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
 
   return (
     <Paper variant="outlined" sx={{ width: 1, mb: 5, paddingY: 1 }}>
-      {/* TODO make a component to display race info in these */}
       <ToggleButton value="detailed-results" onClick={handleClick} selected={opened}>Detailed results</ToggleButton>
       <Typography sx={{ marginY: 1 }}>{race.race}</Typography>
       <Typography>
