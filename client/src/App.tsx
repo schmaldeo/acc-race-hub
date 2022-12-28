@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import {
   Routes,
   Route,
@@ -9,11 +9,8 @@ import Championship from "./components/Championship/ChampionshipComponent";
 import NavBar from "./components/NavBar";
 import ClassQuali from "./components/ClassQualifying/ClassQuali";
 import Races from "./components/Races/Races";
-import AdminLogin from "./components/Admin/AdminLogin";
-import AdminPanel from "./components/Admin/AdminPanel";
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false);
   const { isDarkMode, toggle } = useDarkMode();
   const componentsToShow: number = parseInt(process.env.REACT_APP_COMPONENTS_TO_SHOW_IN_MENU || "7", 10);
   const specifyIndexElement = (toShow: number): ReactNode => {
@@ -41,7 +38,6 @@ function App() {
           {(componentsToShow % 3 === 0 || componentsToShow === 7 || componentsToShow === 2) && <Route path="races" element={<Races />} />}
           {componentsToShow >= 4 && <Route path="classqualifying" element={<ClassQuali />} />}
         </Route>
-        <Route path="admin" element={authenticated ? <AdminPanel /> : <AdminLogin setAuthenticated={setAuthenticated} />} />
       </Routes>
     </ThemeProvider>
   );
