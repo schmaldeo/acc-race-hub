@@ -40,7 +40,7 @@ function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
 
   return (
     <>
-      <AppBar position="sticky" open={open} ref={menuRef}>
+      <AppBar position="sticky" open={open}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
@@ -65,6 +65,7 @@ function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
       </AppBar>
 
       <Drawer
+        ref={menuRef}
         sx={{
           width: drawerWidth,
           flexShrink: 0,
