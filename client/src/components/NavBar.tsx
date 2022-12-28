@@ -52,7 +52,10 @@ function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
           >
             <MenuIcon />
           </IconButton>
-          <Box sx={{ alignSelf: "center" }}>
+          <Box sx={{
+            margin: "auto", position: "absolute", right: "50%", transform: "translateX(50%)",
+          }}
+          >
             <Image
               src="./banner.png"
               height="4rem"
@@ -60,7 +63,6 @@ function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
               alt="ACC Race Hub"
             />
           </Box>
-          <Box sx={{ display: "hidden", mr: 5 }} />
         </Toolbar>
       </AppBar>
 
