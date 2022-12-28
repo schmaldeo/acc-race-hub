@@ -137,3 +137,9 @@ export interface ClassSelectorProps {
 export interface AdminLoginProps {
   setAuthenticated: Dispatch<SetStateAction<boolean>>
 }
+
+export interface NavBarProps {
+  componentsToShow: number;
+  toggleDarkMode: () => void;
+  isDarkMode: boolean;
+}
