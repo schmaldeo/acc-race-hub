@@ -178,3 +178,8 @@ export interface ParsedRaceResults {
     [c: string]: DriverInRaceResults[]
   };
 }
+
+export interface GithubVersionResponse {
+  tag_name: string;
+  body: string;
+}
