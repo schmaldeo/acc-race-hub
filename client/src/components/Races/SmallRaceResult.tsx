@@ -16,7 +16,7 @@ function SmallRaceResult({ race, opened, setOpened }: RaceSubcomponentsProps) {
   } = {
     Pro: race.results.pro,
     Silver: race.results.silver,
-    Am: race.results.am,
+    AM: race.results.am,
   };
 
   const mobile = useMediaQuery("(max-width:600px)");
