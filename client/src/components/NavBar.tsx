@@ -4,7 +4,7 @@ import Brightness3Icon from "@mui/icons-material/Brightness3";
 import LightMode from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
-  Toolbar, IconButton, Drawer, Divider, List, Chip, Box,
+  Toolbar, IconButton, Drawer, Divider, List, Chip, Box, Typography,
 } from "@mui/material";
 import {
   ChevronLeft, ChevronRight, EmojiEvents, SportsScore, Timer,
@@ -129,9 +129,16 @@ function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
           </ListItem>
         </List>
       </Drawer>
+
       <Main>
         <Outlet />
       </Main>
+
+      <Typography sx={{ position: "fixed", right: 0, bottom: 0 }}>
+        © 2023
+        {" "}
+        <a href="https://github.com/schmatteo">schmatteo</a>
+      </Typography>
     </>
   );
 }
