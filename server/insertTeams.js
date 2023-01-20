@@ -30,7 +30,9 @@ const client = new MongoClient(uri);
     let points = 0;
     teams[team].forEach((driver) => {
       const entry = entrylist.find((e) => e.drivers[0].playerID === driver);
-      points += classes[entry.drivers[0].driverCategory];
+      if (entry) {
+        points += classes[entry.drivers[0].driverCategory];
+      }
     });
     collection.insertOne({
       team,
