@@ -36,7 +36,14 @@ export function parseTotalRaceTime(
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / 1000 / 60) % 60);
     const hours = Math.floor((ms / 1000 / 3600) % 24);
-    const parsed = `${hours}:${minutes}:${seconds}.${msRest}`;
+    const localisedArr = [hours, minutes, seconds].map((num) => {
+      return num.toLocaleString("en-UK", {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      });
+    });
+    // const parsed = `${hours}:${minutes}:${seconds}.${msRest}`;
+    const parsed = `${localisedArr[0]}:${localisedArr[1]}:${localisedArr[2]}.${msRest}`;
     return parsed;
   }
 
