@@ -62,11 +62,11 @@ const raceResults = () => {
 
         const existingRaceEntry = await raceCollection.findOne({ race: dataParsed.serverName });
         if (existingRaceEntry) {
-          raceCollection.updateOne(existingRaceEntry, flatten({
+          await raceCollection.updateOne(existingRaceEntry, flatten({
             results: $set(leaderboard),
           }));
         } else {
-          raceCollection.insertOne({
+          await raceCollection.insertOne({
             race: dataParsed.serverName,
             track: dataParsed.trackName,
             qualifyingResults: [],
@@ -78,12 +78,12 @@ const raceResults = () => {
           const manufacturersFetched = await manufacturersCollection.find().toArray();
           const points = manufacturersStandings[manufacturer];
           if (!manufacturersFetched.find((e) => e.car === carsMap[manufacturer])) {
-            manufacturersCollection.insertOne({
+            await manufacturersCollection.insertOne({
               car: carsMap[manufacturer],
               points,
             });
           } else {
-            manufacturersCollection.updateOne({ car: carsMap[manufacturer] }, flatten({
+            await manufacturersCollection.updateOne({ car: carsMap[manufacturer] }, flatten({
               points: $inc(points),
             }));
           }
@@ -148,7 +148,7 @@ const raceResults = () => {
               }
 
               if (!existing) {
-                champCollection.insertOne({
+                await champCollection.insertOne({
                   playerId: driver.playerId,
                   points: pointsToAward,
                   pointsWDrop: pointsToAward,
@@ -157,7 +157,7 @@ const raceResults = () => {
               } else {
                 const existingPoints = [];
                 Object.values(existing.finishes).forEach((round) => {
-                  pointsMap[round[0]] ? round[1] === true ? existingPoints.push(pointsMap[round[0]] + 3) : existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
+                  pointsMap[round[0]] ? round[1] ? existingPoints.push(pointsMap[round[0]] + 3) : existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
                 });
                 existingPoints.push(pointsToAward);
                 const toDrop = existingPoints.indexOf(Math.min(...existingPoints));
@@ -169,11 +169,11 @@ const raceResults = () => {
                   roundDropped: toDrop,
                   [`finishes.${dataParsed.trackName}`]: $set([dnf ? "DNF" : index + 1, driver.result.fastestLap === true, pointsToAward]),
                 };
-                champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
+                await champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
               }
             } else {
               if (!existing) {
-                champCollection.insertOne({
+                await champCollection.insertOne({
                   playerId: driver.playerId,
                   points: 0,
                   pointsWDrop: 0,
@@ -182,7 +182,7 @@ const raceResults = () => {
               } else {
                 const existingPoints = [];
                 Object.values(existing.finishes).forEach((round) => {
-                  pointsMap[round[0]] ? round[1] === true ? existingPoints.push(pointsMap[round[0]] + 3) : existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
+                  pointsMap[round[0]] ? round[1] ? existingPoints.push(pointsMap[round[0]] + 3) : existingPoints.push(pointsMap[round[0]]) : existingPoints.push(0);
                 });
                 existingPoints.push(0);
                 const toDrop = existingPoints.indexOf(Math.min(...existingPoints));
@@ -194,7 +194,7 @@ const raceResults = () => {
                   roundDropped: toDrop,
                   [`finishes.${dataParsed.trackName}`]: $set(["DNS", false, 0]),
                 };
-                champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
+                await champCollection.updateOne({ playerId: driver.playerId }, flatten(updated));
               }
             }
           });
