@@ -137,7 +137,7 @@ function NavBar({ componentsToShow, toggleDarkMode, isDarkMode }: NavBarProps) {
       <Typography sx={{ position: "fixed", right: 0, bottom: 0 }}>
         © 2023
         {" "}
-        <a href="https://github.com/schmatteo">schmatteo</a>
+        <a href="https://github.com/schmaldeo">schmaldeo</a>
       </Typography>
     </>
   );
