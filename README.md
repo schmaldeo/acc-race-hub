@@ -4,7 +4,6 @@
 
 ACC Race Hub is a web app used for displaying race results and standings based on Assetto Corsa Competizione's Dedicated Server's dumps.
 It's using [React](https://reactjs.org/) as a front-end framework, [MUI](https://mui.com/) for UI (no CSS file is used in this project), [Express.js](https://expressjs.com/) for server code and [MongoDB](https://www.mongodb.com/) as a database, all written in [TypeScript](https://www.typescriptlang.org/).
-It was developed in late 2022 and as of May 2024 I decided to archive this project as I do not plan on developing it further.
 
 [Working demo available here](https://schmaldeo.github.io/bskithub/)
 
